@@ -63,7 +63,7 @@ def baixar(pasta, canal, *slugs):
         d = json.load(open(j)); f = f"{b}/{d['id']}.mp4"
         if not os.path.exists(f): continue
         subprocess.run([FF, "-v", "error", "-y", "-i", f, "-vf", "fps=1/5,scale=480:-1,tile=4x3", "-frames:v", "1", f"{b}/{d['id']}_grade.jpg"])
-        subprocess.run([FF, "-v", "error", "-y", "-ss", "3", "-i", f, "-frames:v", "1", f"{b}/{d['id']}_quadro.png"])
+        subprocess.run([FF, "-v", "error", "-y", "-ss", "3", "-i", f, "-frames:v", "1", "-vf", "scale=1920:1080,setsar=1", f"{b}/{d['id']}_quadro.png"])
         print(d["id"], d.get("duration"), d.get("title"), d.get("categories"), sep=" | ")
 
 
@@ -86,10 +86,35 @@ def _t(s):
     return f"{int(s // 3600)}:{int(s % 3600 // 60):02d}:{s % 60:05.2f}"
 
 
+def _duracao(f):
+    pr = FF[:-6] + "ffprobe" if FF.endswith("ffmpeg") else "ffprobe"
+    r = subprocess.run([pr, "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", f], capture_output=True, text=True)
+    return float(r.stdout.strip() or 0)
+
+
+def _caixa(box, asp, altura_cheia=False):
+    """Ajusta a caixa (no quadro 1920x1080) para a proporção do destino SEM esticar: encolhe em volta do centro.
+    altura_cheia: usa a altura toda (1080) e a largura que a proporção pede, centrada no mesmo ponto."""
+    x, y, w, h = map(float, box)
+    cx, cy = x + w / 2, y + h / 2
+    if altura_cheia:
+        h = 1080.0; w = h * asp
+    elif w / h > asp:
+        w = h * asp
+    else:
+        h = w / asp
+    w, h = min(w, 1920), min(h, 1080)
+    x = min(max(0, cx - w / 2), 1920 - w); y = min(max(0, cy - h / 2), 1080 - h)
+    return [int(v) // 2 * 2 for v in (x, y, w, h)]
+
+
 def montar(cfg_path):
     cfg = json.load(open(cfg_path)); pasta = os.path.dirname(os.path.abspath(cfg_path)); b = f"{pasta}/brutos"
     palavras = json.load(open(f"{b}/palavras.json"))
-    trechos = [(x["arquivo"], float(x["ini"]), float(x["fim"])) for x in cfg["trechos"]]
+    trechos = []
+    for x in cfg["trechos"]:      # nunca passa do fim do clipe (evita tela preta)
+        fim = min(float(x["fim"]), _duracao(f"{b}/{x['arquivo']}") - 0.05)
+        trechos.append((x["arquivo"], float(x["ini"]), fim))
     eventos, base = [], 0.0
     for arq, ini, fim in trechos:
         ws = [(a, z, w.strip()) for a, z, w in palavras[arq] if a >= ini - 0.05 and z <= fim + 0.05 and w.strip()]
@@ -106,7 +131,7 @@ def montar(cfg_path):
             if w[2].endswith(("?", "!", ".")): fecha()
         fecha(); base += fim - ini
     dur = base
-    if not 61 <= dur <= 90: print(f"AVISO: duração {dur:.1f}s fora de 61 a 90 s")
+    if not 15 <= dur <= 90: print(f"AVISO: duração {dur:.1f}s fora de 15 a 90 s")
     for i in range(len(eventos) - 1):
         a, z, x = eventos[i]; eventos[i] = (a, min(z, eventos[i + 1][0] - 0.02), x)
     t1, t2 = cfg["titulo"]; cred = f"Corte da live de {cfg['criador']} · {cfg['link']}"
@@ -126,7 +151,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 Dialogue: 0,{_t(0)},{_t(dur)},Tit,,0,0,0,,{{\\pos(540,40)}}{t1}\\N{{\\c{ROXO_ASS}}}{t2}
 Dialogue: 1,{_t(0)},{_t(dur)},Cred,,0,0,0,,{cred}
 """
-    y_leg = 985 if cfg.get("cam") else 1180
+    y_leg = 985 if cfg.get("cam") else 1530
     for a, z, x in eventos:
         ass += f"Dialogue: 2,{_t(a)},{_t(z)},Leg,,0,0,0,,{{\\pos(540,{y_leg})\\fad(40,0)}}{x}\n"
     open(f"{pasta}/legendas.ass", "w", encoding="utf-8").write(ass)
@@ -134,19 +159,24 @@ Dialogue: 1,{_t(0)},{_t(dur)},Cred,,0,0,0,,{cred}
     for arq, ini, fim in trechos:
         ins += ["-ss", str(ini), "-to", str(fim), "-i", f"{b}/{arq}"]
     ins += ["-loop", "1", "-i", LOGO]
-    jx, jy, jw, jh = cfg["jogo"]
+    if cfg.get("cam"):
+        cx, cy, cw, ch = _caixa(cfg["cam"], 1080 / 690)
+        jx, jy, jw, jh = _caixa(cfg["jogo"], 1080 / 990, altura_cheia=True)
+        print("câmera", [cx, cy, cw, ch], "jogo", [jx, jy, jw, jh])
     for i, (arq, ini, fim) in enumerate(trechos):
         d = fim - ini
         fil.append(f"color=c=0x0A0A0F:s=1080x1920:r=30:d={d}[f{i}]")
+        norm = f"[{i}:v]fps=30,scale=1920:1080,setsar=1"      # todo clipe vira 1920x1080 (as caixas são medidas nesse quadro)
         if cfg.get("cam"):
-            cx, cy, cw, ch = cfg["cam"]
-            fil.append(f"[{i}:v]fps=30,split[a{i}][b{i}]")
+            fil.append(f"{norm},split[a{i}][b{i}]")
             fil.append(f"[a{i}]crop={cw}:{ch}:{cx}:{cy},scale=1080:690[c{i}]")
             fil.append(f"[b{i}]crop={jw}:{jh}:{jx}:{jy},scale=1080:990[j{i}]")
             fil.append(f"[f{i}][c{i}]overlay=0:240[x{i}];[x{i}][j{i}]overlay=0:930[v{i}]")
-        else:   # sem câmera: jogo em tela cheia abaixo do título
-            fil.append(f"[{i}:v]fps=30,crop={jw}:{jh}:{jx}:{jy},scale=1080:1680:force_original_aspect_ratio=increase,crop=1080:1680[j{i}]")
-            fil.append(f"[f{i}][j{i}]overlay=0:240[v{i}]")
+        else:   # sem câmera: jogo inteiro (16:9, sem cortar) sobre um fundo desfocado dele mesmo
+            fil.append(f"{norm},split[a{i}][b{i}]")
+            fil.append(f"[a{i}]scale=1080:1680:force_original_aspect_ratio=increase,crop=1080:1680,boxblur=30:2,eq=brightness=-0.25[bg{i}]")
+            fil.append(f"[b{i}]scale=1080:608[j{i}]")
+            fil.append(f"[f{i}][bg{i}]overlay=0:240[x{i}];[x{i}][j{i}]overlay=0:776[v{i}]")
         fil.append(f"[{i}:a]aresample=48000,asetpts=PTS-STARTPTS[s{i}]")
     fil.append("".join(f"[v{i}][s{i}]" for i in range(n)) + f"concat=n={n}:v=1:a=1[vc][ac]")
     fil.append(f"[{n}:v]scale=150:-1,format=rgba[logo]")
@@ -165,7 +195,9 @@ Dialogue: 1,{_t(0)},{_t(dur)},Cred,,0,0,0,,{cred}
         subprocess.run([FF, "-v", "error", "-y", "-ss", f"{s:.1f}", "-i", saida, "-frames:v", "1", "-vf", "scale=360:-1", q])
     subprocess.run([FF, "-v", "error", "-y", *sum((["-i", q] for q in qs), []), "-filter_complex", "hstack=4", f"{pasta}/qa.jpg"])
     for q in qs: os.remove(q)
-    print("ok", saida, f"{dur:.1f}s", len(eventos), "legendas; conferir", f"{pasta}/qa.jpg")
+    # tira com 16 quadros do vídeo inteiro: serve para conferir a HISTÓRIA (começo, meio e fim, sem tela preta)
+    subprocess.run([FF, "-v", "error", "-y", "-i", saida, "-vf", f"fps=16/{dur:.2f},scale=270:-1,tile=8x2", "-frames:v", "1", f"{pasta}/tira.jpg"])
+    print("ok", saida, f"{dur:.1f}s", len(eventos), "legendas; conferir", f"{pasta}/qa.jpg", "e", f"{pasta}/tira.jpg")
 
 
 def publicar(cfg_path):

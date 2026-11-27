@@ -8,7 +8,7 @@ Fonte de verdade: `dna.json` desta pasta (workspace `nexlevel` no FLYD). Isto é
 - Fontes: Inter Black/Bold no título e nas legendas.
 
 ## Formato
-- 9:16, 1080x1920, 61 a 90 s (mínimo de 61 s para o Programa de Criadores).
+- 9:16, 1080x1920, 20 a 60 s: UM momento só, com começo, meio e fim (regra do Lucas em 27/11: nunca misturar momentos diferentes). Os 61 s do Programa de Criadores ficam para depois dos 10 mil seguidores.
 - Layout: câmera do streamer em cima, gameplay embaixo; sem câmera, gameplay em tela cheia.
 - Título fixo no topo, 2 linhas, caixa alta, com emoji (ex.: "ELE NÃO ESPERAVA ISSO 💀").
 - Legendas: TODA a fala (acessibilidade), 2 a 4 palavras por vez, sincronizadas; tamanho médio legível, centro-baixo sem cobrir rosto nem jogo; branco com contorno preto, palavra-chave em #8B2CF5; sons relevantes entre colchetes ([GRITO], [SUSTO]).
