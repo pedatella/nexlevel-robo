@@ -7,4 +7,6 @@
 - piuzinho → twitch.tv/piuzinho (poucos clipes por semana: use 30 dias)
 - yuuri22 → twitch.tv/yuuri22
 - dona → twitch.tv/dona (clipes com muitas views)
+- tioorochitwitch → twitch.tv/tioorochitwitch (olheiro: Grand Theft Auto VI)
+- samiraclose → twitch.tv/samiraclose (olheiro: Grand Theft Auto VI)
 Bloqueado: cellbit. Pendentes: thedarkness, davyjones (ver autorizacoes/).
