@@ -11,7 +11,7 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
 - Ferramenta: `ferramentas/corte.py`. Leia o cabeçalho; ele explica os comandos e o corte.json. Rode sempre de dentro de `ferramentas/` com `python3 corte.py ...`.
 
 ## Passo a passo
-1. A pasta do corte é `cortes/corte-NNN` (caminho absoluto: `$GITHUB_WORKSPACE/cortes/corte-NNN`). NNN é o número da última linha de `marca/usados.md` + 1, com 3 dígitos.
+1. A pasta do corte é `cortes/corte-NNN` (caminho absoluto: `$GITHUB_WORKSPACE/cortes/corte-NNN`). NNN é o maior número de corte da tabela de `marca/usados.md` + 1, com 3 dígitos.
 2. Liste clipes: `python3 corte.py clipes <canal> 7` para cada criador liberado (para a Kick, `kick:coringa`). Se a semana estiver fraca, use 30 dias. Se uma plataforma falhar, siga com as outras. Escolha candidatos com muitas views e potencial de engajamento. Prioridade: susto ou terror, humor, rage, jogada absurda, interação com o chat.
 3. `python3 corte.py baixar <pasta> <canal> <slug> ...` com 3 a 6 candidatos. OLHE cada `brutos/<id>_grade.jpg` com a ferramenta Read. DESCARTE e mova para `brutos/descartados/` todo clipe com:
    - nudez ou cena sexual (até de jogo, como as do GTA VI) ou conteúdo sexual explícito na fala;
@@ -34,7 +34,7 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
    - o selo aparece.
    Se algo estiver errado, ajuste o corte.json e monte de novo. A duração tem de ficar entre 61 e 90 s.
 8. `python3 corte.py publicar <pasta>/corte.json`. Ele envia o vídeo como rascunho para a caixa de entrada do TikTok do Lucas; ele publica pelo app colando a legenda.
-9. Acrescente a linha do corte em `marca/usados.md` (mesmo formato das linhas que já existem).
+9. Acrescente a linha do corte na primeira tabela de `marca/usados.md` (mesmo formato). Clipes que você descartou por conteúdo proibido vão na tabela "Clipes descartados".
 10. Escreva o resumo final em `resumo.md` na raiz do repositório e repita como seu último texto. Formato:
    - primeira linha: `# corte-NNN · <criador> · <título>`;
    - duração e status do envio ao TikTok;
