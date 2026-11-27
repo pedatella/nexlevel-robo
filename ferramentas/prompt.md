@@ -73,6 +73,7 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
    5. Confira com `quadros` e `quadro` de novo: nenhum quadro pode mostrar a parte imprópria sem borrão, e o resto do jogo continua nítido. Se não der para cobrir direito, use uma caixa maior. Liste no resumo os trechos borrados.
    Se algo estiver errado, ajuste o corte.json e monte de novo. Se não der para ficar bom, troque de clipe. Pergunte-se: "eu assistiria isso até o fim?" Se não, não envie.
 8. `python3 corte.py publicar <pasta>/corte.json`. Ele envia o vídeo como rascunho para a caixa de entrada do TikTok do Lucas; ele publica pelo app colando a legenda.
+   Se o TikTok recusar o envio (por exemplo `spam_risk_too_many_pending_share`, rascunhos demais pendentes), o corte NÃO se perde: o vídeo vai para o Telegram do Lucas. Mesmo assim faça o passo 9 (registrar em `usados.md`) e escreva o resumo com a 1ª linha `# FALHOU: TikTok recusou (<motivo>) · corte-NNN · criador · título` e a legenda no bloco de código, como sempre. Não tente reenviar.
 9. Acrescente a linha do corte na primeira tabela de `marca/usados.md` (mesmo formato; trecho de live entra como `<video_id>@<ini>`). Clipes que você descartou por conteúdo proibido vão na tabela "Clipes descartados".
 10. Escreva o resumo final em `resumo.md` na raiz do repositório e repita como seu último texto. Formato:
    - primeira linha: `# corte-NNN · <criador> · <título>`;

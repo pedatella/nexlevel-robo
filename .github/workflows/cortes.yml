@@ -165,7 +165,11 @@ jobs:
         run: |
           [ -n "$TG_TOKEN" ] && [ -n "$TG_CHAT" ] || { echo "Telegram não configurado"; exit 0; }
           [ -s resumo.md ] || printf '# FALHOU: o robô parou antes de terminar (erro técnico)\n\nVou tentar de novo no horário reserva.\n' > resumo.md
-          if grep -q "FALHOU" <(head -1 resumo.md); then
+          V=$(ls cortes/*/corte-*.mp4 2>/dev/null | head -1)
+          if grep -q "FALHOU" <(head -1 resumo.md) && [ -n "$V" ] && grep -q '^```' resumo.md; then
+            # vídeo pronto, mas o TikTok não aceitou: o Lucas posta pelo vídeo do Telegram
+            { echo "🎬 NexLevel: $(basename "$V" .mp4) pronto, mas o TikTok não aceitou agora."; head -1 resumo.md | sed 's/^# FALHOU: /Motivo: /'; echo; echo "👉 Salve o vídeo abaixo (com som) e poste. Legenda para colar:"; echo; sed -n '/^```/,/^```/p' resumo.md | grep -v '^```'; } > tg.txt
+          elif grep -q "FALHOU" <(head -1 resumo.md); then
             { head -3 resumo.md | sed 's/^# /⚠️ NexLevel /'; echo; echo "Detalhes: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > tg.txt
           else
             { head -1 resumo.md | sed 's/^# /🎬 NexLevel: /'; echo; echo "Já está nos rascunhos do seu TikTok. Legenda para colar:"; echo; sed -n '/^```/,/^```/p' resumo.md | grep -v '^```'; echo; echo "Ver o vídeo: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > tg.txt
