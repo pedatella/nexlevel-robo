@@ -40,6 +40,12 @@ jobs:
           path: ~/.cache/huggingface
           key: whisper-small
 
+      - name: Pedidos do Lucas no Telegram (bloquear)
+        env:
+          TG_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python3 ferramentas/bloqueios.py || true
+
       - name: Diretor de cortes
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
