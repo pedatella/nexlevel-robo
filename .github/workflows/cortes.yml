@@ -5,11 +5,14 @@ on:
     - cron: "17 12 * * *"  # 9h17 Brasília (rascunho chega antes das 11h, mesmo com atraso do GitHub)
     - cron: "17 18 * * *"  # 15h17 Brasília (antes das 17h)
     - cron: "17 22 * * *"  # 19h17 Brasília (antes das 21h)
-    # reservas: o GitHub às vezes não dispara um horário (aconteceu em 27/11 às 15h17).
-    # 30 min depois, cada reserva confere se o principal rodou; se não rodou, faz o corte.
+    # reservas: o GitHub às vezes pula um disparo (aconteceu em 27/11 às 15h17).
+    # Cada faixa tem 2 reservas (30 e 60 min depois). Elas só cortam se a faixa ainda não teve corte.
     - cron: "47 12 * * *"
+    - cron: "17 13 * * *"
     - cron: "47 18 * * *"
+    - cron: "17 19 * * *"
     - cron: "47 22 * * *"
+    - cron: "17 23 * * *"
   workflow_dispatch:
 
 permissions:
@@ -35,12 +38,14 @@ jobs:
           CRON: ${{ github.event.schedule }}
         run: |
           rodar=true
-          if [ "${CRON%% *}" = "47" ]; then
-            desde=$(date -u -d '-150 min' +%Y-%m-%dT%H:%M:%SZ)
-            n=$(gh run list -R "$GITHUB_REPOSITORY" -w cortes.yml -L 20 --json databaseId,createdAt,status,conclusion \
-              --jq "[.[] | select(.databaseId != ${{ github.run_id }} and .createdAt >= \"$desde\" and (.status != \"completed\" or .conclusion == \"success\"))] | length")
+          if [ -n "$CRON" ]; then
+            # faixa do horário: 12h, 18h ou 22h UTC (9h, 15h, 19h Brasília); o primeiro disparo que chegar faz o corte
+            H=$(date -u +%H); case "$H" in 12|13) F=12;; 18|19) F=18;; 22|23) F=22;; *) F=$H;; esac
+            desde="$(date -u +%Y-%m-%d)T${F}:00:00Z"
+            n=$(gh run list -R "$GITHUB_REPOSITORY" -w cortes.yml -L 30 --json databaseId,createdAt,updatedAt,status,conclusion \
+              --jq "[.[] | select(.databaseId != ${{ github.run_id }} and .createdAt >= \"$desde\" and (.status != \"completed\" or (.conclusion == \"success\" and ((.updatedAt|fromdateiso8601) - (.createdAt|fromdateiso8601)) > 150)))] | length")
             [ "$n" -gt 0 ] && rodar=false
-            echo "reserva: $n execução(ões) recentes -> rodar=$rodar"
+            echo "faixa desde $desde: $n execução(ões) -> rodar=$rodar"
           fi
           echo "rodar=$rodar" >> "$GITHUB_OUTPUT"
 
@@ -154,8 +159,9 @@ jobs:
           TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           [ -n "$TG_TOKEN" ] && [ -n "$TG_CHAT" ] || { echo "Telegram não configurado"; exit 0; }
+          [ -s resumo.md ] || printf '# FALHOU: o robô parou antes de terminar (erro técnico)\n\nVou tentar de novo no horário reserva.\n' > resumo.md
           if grep -q "FALHOU" <(head -1 resumo.md); then
-            { head -3 resumo.md | sed 's/^# /⚠️ NexLevel /'; } > tg.txt
+            { head -3 resumo.md | sed 's/^# /⚠️ NexLevel /'; echo; echo "Detalhes: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > tg.txt
           else
             { head -1 resumo.md | sed 's/^# /🎬 NexLevel: /'; echo; echo "Já está nos rascunhos do seu TikTok. Legenda para colar:"; echo; sed -n '/^```/,/^```/p' resumo.md | grep -v '^```'; echo; echo "Ver o vídeo: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > tg.txt
           fi
