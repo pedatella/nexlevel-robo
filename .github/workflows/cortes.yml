@@ -86,6 +86,8 @@ jobs:
             cortes/*/qa.jpg
             cortes/*/tira.jpg
             cortes/*/legenda.txt
+            cortes/*/corte.json
+            cortes/*/brutos/*.canal.txt
           if-no-files-found: ignore
           retention-days: 30
 

@@ -7,7 +7,7 @@
 | 2026-11-27 | corte-005 | bistecone | 2219145806 | ABRIU A LIVE 22H E JÁ QUER DORMIR |
 | 2026-11-27 | corte-006 | alanzoka | 3011843597 | TRÂNSITO CAÓTICO NO GTA 6 |
 | 2026-11-27 | corte-007 | bistecone | 797269546 | ERA TUDO UMA ARMADILHA NO GTA 6 |
-| 2026-11-27 | corte-008 | alanzoka | 1724961707 | TENTOU FUGIR DE QUADRICICLO E ACABOU NO HIDROAVIÃO |
+| 2026-11-27 | corte-008 | paulinholoko (saiu creditado ERRADO como alanzoka; não postar) | 1724961707 | TENTOU FUGIR DE QUADRICICLO E ACABOU NO HIDROAVIÃO |
 
 ## Clipes descartados (nunca usar)
 | clipe | criador | motivo |

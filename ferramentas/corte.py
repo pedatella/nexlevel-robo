@@ -6,7 +6,7 @@
   $PY corte.py baixar <pasta> <canal> <slug> [...]   baixa clipes, gera grade de quadros (<id>_grade.jpg) e quadro.png
   $PY corte.py estender <pasta> <slug_twitch> [antes] [depois]  baixa o trecho da live em volta do clipe (mais contexto, mesma cena)
   $PY corte.py live <canal_twitch> [n]               acha os n momentos mais agitados da última live gravada (pelo áudio)
-  $PY corte.py trecho <pasta> <video_id> <ini> <fim>  baixa esse pedaço da live como se fosse um clipe
+  $PY corte.py trecho <pasta> <canal> <video_id> <ini> <fim>  baixa esse pedaço da live como se fosse um clipe
   $PY corte.py transcrever <pasta>                   transcreve todos os .mp4 da pasta/brutos (palavras.json)
   $PY corte.py montar <pasta>/corte.json             monta o vídeo 1080x1920 (título, câmera, jogo, legendas, crédito, selo)
   (canal da Twitch sem prefixo; Kick com prefixo: kick:coringa)
@@ -68,6 +68,8 @@ def baixar(pasta, canal, *slugs):
     for j in sorted(glob.glob(f"{b}/*.info.json")):
         d = json.load(open(j)); f = f"{b}/{d['id']}.mp4"
         if not os.path.exists(f): continue
+        if not os.path.exists(f"{b}/{d['id']}.canal.txt"):
+            open(f"{b}/{d['id']}.canal.txt", "w").write(canal)
         subprocess.run([FF, "-v", "error", "-y", "-i", f, "-vf", "fps=1/5,scale=480:-1,tile=4x3", "-frames:v", "1", f"{b}/{d['id']}_grade.jpg"])
         subprocess.run([FF, "-v", "error", "-y", "-ss", "3", "-i", f, "-frames:v", "1", "-vf", "scale=1920:1080,setsar=1", f"{b}/{d['id']}_quadro.png"])
         print(d["id"], d.get("duration"), d.get("title"), d.get("categories"), sep=" | ")
@@ -151,10 +153,10 @@ def live(canal, n="8", horas=""):
     print(f"live {vid} ({seg // 60} min): {v.get('title', '')} | jogos: {', '.join(c['title'] for c in caps) or '?'}")
     for p in sorted(picos):
         if agito[p] < 3: continue
-        print(f"pico em {p // 3600}h{p % 3600 // 60:02d}m{p % 60:02d}s ({p} s) | {jogo_em(p)} | força {agito[p]:.1f} dB | trecho sugerido: {vid} {p - 70} {p + 40}")
+        print(f"pico em {p // 3600}h{p % 3600 // 60:02d}m{p % 60:02d}s ({p} s) | {jogo_em(p)} | força {agito[p]:.1f} dB | trecho sugerido: {canal} {vid} {p - 70} {p + 40}")
 
 
-def trecho(pasta, video_id, ini, fim):
+def trecho(pasta, canal, video_id, ini, fim):
     """Baixa um pedaço da live gravada (segundos ini a fim) para brutos/, com grade e quadro, como um clipe."""
     b = f"{pasta}/brutos"; os.makedirs(b, exist_ok=True)
     ini, fim = max(0, int(float(ini))), int(float(fim)); nome = f"{video_id}_{ini}"
@@ -165,7 +167,8 @@ def trecho(pasta, video_id, ini, fim):
         print("FALHOU o download desse trecho."); return
     subprocess.run([FF, "-v", "error", "-y", "-i", f, "-vf", "fps=1/5,scale=480:-1,tile=6x4", "-frames:v", "1", f"{b}/{nome}_grade.jpg"])
     subprocess.run([FF, "-v", "error", "-y", "-ss", "3", "-i", f, "-frames:v", "1", "-vf", "scale=1920:1080,setsar=1", f"{b}/{nome}_quadro.png"])
-    print(nome, f"{fim - ini}s", sep=" | ")
+    open(f"{b}/{nome}.canal.txt", "w").write(canal)
+    print(nome, f"{fim - ini}s", f"canal {canal}", sep=" | ")
 
 
 def transcrever(pasta):
@@ -212,6 +215,22 @@ def _caixa(box, asp, altura_cheia=False):
 def montar(cfg_path):
     cfg = json.load(open(cfg_path)); pasta = os.path.dirname(os.path.abspath(cfg_path)); b = f"{pasta}/brutos"
     palavras = json.load(open(f"{b}/palavras.json"))
+    # CRÉDITO À PROVA DE ERRO: o canal vem do download, não da memória do diretor
+    canais = set()
+    for x in cfg["trechos"]:
+        cf = f"{b}/{os.path.splitext(x['arquivo'])[0]}.canal.txt"
+        if not os.path.exists(cf):
+            raise SystemExit(f"ERRO: não sei de qual canal veio {x['arquivo']} (baixe com baixar/trecho)")
+        canais.add(open(cf).read().strip().lower())
+    if len(canais) != 1:
+        raise SystemExit(f"ERRO: trechos de canais diferentes {canais}: um corte é de UM criador só")
+    canal = canais.pop(); nome_canal = canal.split(":")[-1]
+    link_certo = f"kick.com/{nome_canal}" if canal.startswith("kick:") else f"twitch.tv/{nome_canal}"
+    if cfg.get("link", "").lower().rstrip("/") != link_certo:
+        raise SystemExit(f"ERRO DE CRÉDITO: o vídeo é do canal {link_certo}, mas o corte.json diz link={cfg.get('link')!r} "
+                         f"e criador={cfg.get('criador')!r}. Corrija criador, link e legenda.")
+    if nome_canal.rstrip("e") not in cfg["legenda"].lower() and nome_canal not in cfg["legenda"].lower():
+        print(f"AVISO: a legenda não cita {link_certo}; confira o crédito da legenda.")
     trechos = []
     for x in cfg["trechos"]:      # nunca passa do fim do clipe (evita tela preta)
         fim = min(float(x["fim"]), _duracao(f"{b}/{x['arquivo']}") - 0.05)
