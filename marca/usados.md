@@ -5,6 +5,7 @@
 | 2026-11-26 | corte-003 | bistecone | 3300415309, 2888949086, 523232234 | O CAOS DO BISTECONE NO GTA 6 |
 | 2026-11-27 | corte-004 | alanzoka | 1890495947, 2695720706 | ELE VIU UM CARRO VOANDO NO GTA 6 |
 | 2026-11-27 | corte-005 | bistecone | 2219145806 | ABRIU A LIVE 22H E JÁ QUER DORMIR |
+| 2026-11-27 | corte-006 | alanzoka | 3011843597 | TRÂNSITO CAÓTICO NO GTA 6 |
 
 ## Clipes descartados (nunca usar)
 | clipe | criador | motivo |
@@ -22,3 +23,4 @@
 | clip_01M7ZXT8BGRK0VAC0ED6411EAX | coringa (kick) | nudez (chuveiro) do GTA VI |
 | clip_01M7XW8N1G9TTF698X70GZYKWR | coringa (kick) | cena sugestiva do GTA VI |
 | 3228469390 | bistecone | conteúdo sexual/ofensivo na fala |
+| 1434403185 | alanzoka | legenda queimada na imagem e personagem seminu |
