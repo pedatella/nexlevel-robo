@@ -23,7 +23,7 @@ import glob, json, os, subprocess, sys
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FF = os.environ.get("FF", "ffmpeg")
-FONTES = os.environ.get("FONTES", "/usr/share/fonts/truetype/msttcorefonts")
+FONTES = os.environ.get("FONTES", f"{RAIZ}/fontes")
 MARCA = f"{RAIZ}/marca"
 LOGO = f"{MARCA}/public/logo.png"
 ROXO_ASS = "&HF52C8B&"
@@ -117,9 +117,9 @@ PlayResY: 1920
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Leg,Arial Black,64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,0,0,0,0,100,100,0,0,1,6,2,5,60,60,0,1
-Style: Tit,Arial Black,62,&H00FFFFFF,&H00FFFFFF,&H000F0A0A,&H00000000,0,0,0,0,100,100,0,0,1,4,0,8,40,40,70,1
-Style: Cred,Arial,34,&H00E6E6EA,&H00FFFFFF,&H000F0A0A,&HA0000000,1,0,0,0,100,100,0,0,3,10,0,2,40,40,46,1
+Style: Leg,Archivo Black,64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,0,0,0,0,100,100,0,0,1,6,2,5,60,60,0,1
+Style: Tit,Archivo Black,62,&H00FFFFFF,&H00FFFFFF,&H000F0A0A,&H00000000,0,0,0,0,100,100,0,0,1,4,0,8,40,40,70,1
+Style: Cred,Liberation Sans,34,&H00E6E6EA,&H00FFFFFF,&H000F0A0A,&HA0000000,1,0,0,0,100,100,0,0,3,10,0,2,40,40,46,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
