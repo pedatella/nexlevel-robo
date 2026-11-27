@@ -20,7 +20,12 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
    - aposta, bet ou cassino;
    - propaganda ou publi do streamer (por exemplo, falar de loja ou patrocinador);
    - polêmica ou fofoca.
-   Clipes da Kick vêm marcados 18+ por padrão: olhe com o mesmo rigor. Na dúvida, descarte.
+   Clipes da Kick vêm marcados 18+ por padrão: olhe com o mesmo rigor.
+   EXCEÇÃO COM BORRÃO (pedido do Lucas, 27/11: os clipes do Coringa são muito bons): se a graça do clipe NÃO é a cena imprópria e ela aparece só em parte do tempo (nudez ou cena sexual DO JOGO), NÃO descarte: use o clipe e borre esses trechos (passo 7). Continue descartando se:
+   - a cena imprópria é o assunto do clipe, ou ocuparia mais de 1/4 do vídeo;
+   - a FALA é sexual explícita (borrão não resolve o áudio);
+   - é qualquer outro item da lista acima (violência real, aposta, publi etc.).
+   Na dúvida sobre o resto, descarte.
 4. `python3 corte.py transcrever <pasta>`. MODELO A SEGUIR: o corte 001, o preferido do Lucas. Abra `marca/referencia/corte-001-tira.jpg` (16 quadros dele) e `marca/referencia/corte-001.json` antes de decidir.
    O que fez o 001 funcionar:
    - Título que resume a piada e gera curiosidade: "A LUCIA NÃO TEM UM DIA DE PAZ NO GTA 6".
@@ -46,6 +51,7 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
    - a legenda não cobre o rosto;
    - o crédito está embaixo e o selo aparece;
    - a tira mostra UM momento só, do mesmo clipe, do começo ao fim: sem outra cena, sem tela preta, sem trecho parado.
+   BORRÃO: se o clipe tem cena imprópria do jogo, rode `python3 corte.py quadros <pasta>` (e `quadros <pasta> 40` etc. para o resto). Cada quadro traz o segundo do VÍDEO FINAL escrito em amarelo. Anote TODOS os segundos com nudez ou cena sexual e ponha em `"borrar": [{"ini": X, "fim": Y}]` no corte.json, com 1 s de folga antes e depois. Monte de novo e rode `quadros` outra vez: nenhum quadro pode mostrar a cena sem borrão. Liste no resumo quais trechos foram borrados.
    Se algo estiver errado, ajuste o corte.json e monte de novo. Se não der para ficar bom, troque de clipe. Pergunte-se: "eu assistiria isso até o fim?" Se não, não envie.
 8. `python3 corte.py publicar <pasta>/corte.json`. Ele envia o vídeo como rascunho para a caixa de entrada do TikTok do Lucas; ele publica pelo app colando a legenda.
 9. Acrescente a linha do corte na primeira tabela de `marca/usados.md` (mesmo formato). Clipes que você descartou por conteúdo proibido vão na tabela "Clipes descartados".
