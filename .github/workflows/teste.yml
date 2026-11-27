@@ -17,8 +17,16 @@ jobs:
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-liberation > /dev/null
           pip install -q -r requirements.txt
           fc-list | grep -i "liberation sans" | head -1
-      - name: Lives gravadas (picos de jogo)
+      - name: YouTube dos criadores
         run: |
           cd ferramentas
-          python3 corte.py live paulinholokobr 6
-          git -C .. checkout -- marca 2>/dev/null || true
+          for h in alanzoka loudcoringa PaulinhoLOKO piuzinho bistecone Kosky yuuri22 dona; do
+            echo "########## @$h"; python3 corte.py youtube "yt:@$h" 4 2>&1 | head -12
+          done
+      - name: Picos e trecho de um vídeo do YouTube
+        run: |
+          cd ferramentas
+          ID=$(yt-dlp --flat-playlist -I 1:1 --print id "https://www.youtube.com/@alanzoka/videos" 2>&1 | tail -1); echo "id $ID"
+          python3 corte.py picos "yt:@alanzoka" "$ID" 3 2>&1 | tail -5
+          python3 corte.py trecho /tmp/t "yt:@alanzoka" "$ID" 120 180 2>&1 | tail -3
+          ls -la /tmp/t/brutos 2>/dev/null; ffprobe -v error -show_entries stream=codec_type,height -of compact /tmp/t/brutos/*.mp4 2>/dev/null

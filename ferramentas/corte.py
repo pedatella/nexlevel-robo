@@ -35,6 +35,19 @@ LOGO = f"{MARCA}/public/logo.png"
 ROXO_ASS = "&HF52C8B&"
 # melhor qualidade até 1440p (fica mais nítido ao reduzir para 1080), nunca a versão vertical automática da Twitch
 QUALIDADE = "best[height<=1440][format_id!*=portrait]/best[format_id!*=portrait]/best"
+# YouTube: vídeo e áudio vêm separados; junta o melhor até 1440p (nunca Shorts verticais)
+QUALIDADE_YT = "bv*[height<=1440][height>=720]+ba/b[height<=1440]/bv*+ba/b"
+
+
+def _eh_yt(canal):
+    return canal.startswith("yt:")
+
+
+def _url_video(canal, video_id):
+    """Endereço do vídeo/live gravada: YouTube (canal "yt:@handle") ou Twitch."""
+    if _eh_yt(canal):
+        return f"https://www.youtube.com/watch?v={video_id}"
+    return f"https://www.twitch.tv/videos/{video_id}"
 
 
 def _url_clipe(canal, slug):
@@ -110,6 +123,59 @@ def _info(url):
     return json.loads(r.stdout) if r.stdout.strip() else {}
 
 
+def youtube(canal, n="15"):
+    """Lista os vídeos e as lives gravadas mais recentes de um canal do YouTube (canal = "yt:@handle").
+    Mostra views | duração | título | id. Vídeos longos (lives, gameplays) servem para `picos`; Shorts são ignorados."""
+    h = canal[3:]
+    vistos = []
+    for aba in ("streams", "videos"):
+        out = subprocess.run(["yt-dlp", "--flat-playlist", "-I", f"1:{n}", "-J", f"https://www.youtube.com/{h}/{aba}"],
+                             capture_output=True, text=True)
+        try:
+            es = json.loads(out.stdout).get("entries") or []
+        except Exception:  # noqa: BLE001
+            print(f"{aba}: YouTube não respondeu ({out.stderr.strip()[-200:]})"); continue
+        print(f"== {aba} ({len(es)})")
+        for e in es:
+            if e.get("id") in vistos: continue
+            vistos.append(e.get("id"))
+            print(e.get("view_count"), e.get("duration"), e.get("title"), e.get("id"), sep=" | ")
+
+
+def picos(canal, video_id, n="8"):
+    """Acha os momentos mais agitados (gritos, risadas) de um vídeo ou live gravada do YouTube pelo áudio.
+    Depois use `trecho <pasta> <canal> <video_id> <ini> <fim>` para baixar o pedaço."""
+    import numpy as np, tempfile
+    url = _url_video(canal, video_id)
+    tmp = tempfile.mkdtemp()
+    subprocess.run(["yt-dlp", "-q", "-f", "ba[abr<=80]/ba/b", "-o", f"{tmp}/a.%(ext)s", url], check=False)
+    arq = glob.glob(f"{tmp}/a.*")
+    if not arq:
+        print("SEM ÁUDIO: não consegui baixar esse vídeo."); return
+    raw = subprocess.run([FF, "-v", "error", "-i", arq[0], "-f", "s16le", "-ac", "1", "-ar", "2000", "-"], capture_output=True).stdout
+    for f in arq: os.remove(f)
+    a = np.frombuffer(raw, np.int16).astype(np.float32)
+    seg = len(a) // 2000
+    if seg < 120:
+        print("vídeo curto demais para procurar picos: use inteiro com `trecho` 0 ao fim."); return
+    rms = np.sqrt((a[:seg * 2000].reshape(seg, 2000) ** 2).mean(1) + 1)
+    db = 20 * np.log10(rms)
+    janela = min(300, max(30, seg // 6))
+    base = np.convolve(db, np.ones(janela) / janela, "same")
+    agito = np.convolve(db - base, np.ones(8) / 8, "same")
+    agito[:min(60, seg // 10)] = -99; agito[-min(30, seg // 10):] = -99
+    mudo = np.convolve(db, np.ones(20) / 20, "same") < 30          # trechos silenciados não servem
+    agito[mudo] = -99
+    ps = []
+    for i in np.argsort(-agito):
+        if len(ps) >= int(n): break
+        if all(abs(i - p) > 120 for p in ps): ps.append(int(i))
+    print(f"vídeo {video_id} ({seg // 60} min)")
+    for p in sorted(ps):
+        if agito[p] < 3: continue
+        print(f"pico em {p // 3600}h{p % 3600 // 60:02d}m{p % 60:02d}s ({p} s) | força {agito[p]:.1f} dB | trecho sugerido: {canal} {video_id} {max(0, p - 70)} {min(seg, p + 40)}")
+
+
 def live(canal, n="8", horas=""):
     """Acha os melhores momentos da LIVE GRAVADA mais recente do canal da Twitch pelo áudio (gritos, risadas, agito).
     Baixa só o áudio, mede o volume a cada segundo e devolve os n picos (pelo menos 4 min de distância um do outro).
@@ -162,8 +228,9 @@ def trecho(pasta, canal, video_id, ini, fim):
     """Baixa um pedaço da live gravada (segundos ini a fim) para brutos/, com grade e quadro, como um clipe."""
     b = f"{pasta}/brutos"; os.makedirs(b, exist_ok=True)
     ini, fim = max(0, int(float(ini))), int(float(fim)); nome = f"{video_id}_{ini}"
-    subprocess.run(["yt-dlp", "-q", "-f", QUALIDADE, "--download-sections", f"*{ini}-{fim}", "--remux-video", "mp4",
-                    "-o", f"{b}/{nome}.%(ext)s", f"https://www.twitch.tv/videos/{video_id}"], check=False)
+    fmt = ["-f", QUALIDADE_YT, "--merge-output-format", "mp4"] if _eh_yt(canal) else ["-f", QUALIDADE, "--remux-video", "mp4"]
+    subprocess.run(["yt-dlp", "-q", *fmt, "--download-sections", f"*{ini}-{fim}", "--force-keyframes-at-cuts",
+                    "-o", f"{b}/{nome}.%(ext)s", _url_video(canal, video_id)], check=False)
     f = f"{b}/{nome}.mp4"
     if not os.path.exists(f):
         print("FALHOU o download desse trecho."); return
@@ -241,7 +308,8 @@ def montar(cfg_path):
     if len(canais) != 1:
         raise SystemExit(f"ERRO: trechos de canais diferentes {canais}: um corte é de UM criador só")
     canal = canais.pop(); nome_canal = canal.split(":")[-1]
-    link_certo = f"kick.com/{nome_canal}" if canal.startswith("kick:") else f"twitch.tv/{nome_canal}"
+    link_certo = (f"kick.com/{nome_canal}" if canal.startswith("kick:") else
+                  f"youtube.com/{nome_canal}".lower() if canal.startswith("yt:") else f"twitch.tv/{nome_canal}")
     if cfg.get("link", "").lower().rstrip("/") != link_certo:
         raise SystemExit(f"ERRO DE CRÉDITO: o vídeo é do canal {link_certo}, mas o corte.json diz link={cfg.get('link')!r} "
                          f"e criador={cfg.get('criador')!r}. Corrija criador, link e legenda.")
@@ -398,4 +466,4 @@ def publicar(cfg_path):
 
 if __name__ == "__main__":
     cmd, *args = sys.argv[1:]
-    {"clipes": clipes, "baixar": baixar, "estender": estender, "quadros": quadros, "quadro": quadro, "live": live, "trecho": trecho, "transcrever": transcrever, "montar": montar, "publicar": publicar}[cmd](*args)
+    {"clipes": clipes, "baixar": baixar, "estender": estender, "quadros": quadros, "quadro": quadro, "live": live, "youtube": youtube, "picos": picos, "trecho": trecho, "transcrever": transcrever, "montar": montar, "publicar": publicar}[cmd](*args)
