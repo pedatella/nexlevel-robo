@@ -25,7 +25,7 @@ corte.json:
   "borrar": [{"ini": 12.0, "fim": 15.5, "caixa": [300, 1200, 400, 500]}]  # opcional: borra SÓ essa caixa (tela final 1080x1920) nesses segundos
 }
 """
-import glob, json, os, subprocess, sys
+import glob, json, os, re, subprocess, sys
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FF = os.environ.get("FF", "ffmpeg")
@@ -169,8 +169,12 @@ def trecho(pasta, canal, video_id, ini, fim):
         print("FALHOU o download desse trecho."); return
     subprocess.run([FF, "-v", "error", "-y", "-i", f, "-vf", "fps=1/5,scale=480:-1,tile=6x4", "-frames:v", "1", f"{b}/{nome}_grade.jpg"])
     subprocess.run([FF, "-v", "error", "-y", "-ss", "3", "-i", f, "-frames:v", "1", "-vf", "scale=1920:1080,setsar=1", f"{b}/{nome}_quadro.png"])
+    vol = _volume(f)
+    if vol < MUDO_DB:   # a Twitch silencia pedaços de VOD (música com direitos): sem som não serve
+        os.makedirs(f"{b}/descartados", exist_ok=True); os.replace(f, f"{b}/descartados/{nome}.mp4")
+        print(f"TRECHO MUDO ({vol:.0f} dB): a Twitch silenciou esse pedaço da live. Descartado, escolha outro."); return
     open(f"{b}/{nome}.canal.txt", "w").write(canal)
-    print(nome, f"{fim - ini}s", f"canal {canal}", sep=" | ")
+    print(nome, f"{fim - ini}s", f"canal {canal}", f"som {vol:.0f} dB", sep=" | ")
 
 
 def transcrever(pasta):
@@ -190,6 +194,16 @@ def transcrever(pasta):
 
 def _t(s):
     return f"{int(s // 3600)}:{int(s % 3600 // 60):02d}:{s % 60:05.2f}"
+
+
+def _volume(f, ini=None, fim=None):
+    """Volume médio do áudio em dB (-91 = silêncio). Sem faixa de áudio: -99."""
+    cmd = [FF, "-v", "info"] + (["-ss", str(ini), "-to", str(fim)] if ini is not None else []) + ["-i", f, "-vn", "-af", "volumedetect", "-f", "null", "-"]
+    m = re.search(r"mean_volume: (-?[0-9.]+) dB", subprocess.run(cmd, capture_output=True, text=True).stderr)
+    return float(m.group(1)) if m else -99.0
+
+
+MUDO_DB = -50   # abaixo disso o vídeo está praticamente sem som
 
 
 def _duracao(f):
@@ -321,11 +335,16 @@ Dialogue: 1,{_t(0)},{_t(dur)},Cred,,0,0,0,,{cred}
     fil.append(f"[{atual}]{linhas}[vb]")
     fil.append("[vb][logo]overlay=W-w-24:252:shortest=1[vl]")
     fil.append(f"[vl]subtitles={pasta}/legendas.ass:fontsdir={FONTES}[vf]")
-    fil.append("[ac]loudnorm=I=-14:TP=-1.5:LRA=11[af]")
+    fil.append("[ac]loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[af]")
     saida = f"{pasta}/{os.path.basename(pasta)}.mp4"
     subprocess.run([FF, "-v", "error", "-y", *ins, "-filter_complex", ";".join(fil), "-map", "[vf]", "-map", "[af]", "-t", f"{dur:.2f}",
                     "-c:v", "libx264", "-preset", "medium", "-b:v", "14M", "-maxrate", "16M", "-bufsize", "28M", "-pix_fmt", "yuv420p",
                     "-c:a", "aac", "-b:a", "256k", "-movflags", "+faststart", saida], check=True)
+    vol = _volume(saida)
+    if vol < MUDO_DB:
+        os.remove(saida)
+        raise SystemExit(f"ERRO: o vídeo montado saiu SEM SOM ({vol:.0f} dB). Confira o áudio do clipe/trecho e use outro.")
+    print(f"som ok ({vol:.0f} dB)")
     qs = []
     for k, s in enumerate((1, dur * 0.3, dur * 0.65, dur - 3)):
         q = f"{pasta}/q{k}.png"; qs.append(q)
@@ -369,6 +388,9 @@ def publicar(cfg_path):
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import tiktok_envio
     video = f"{pasta}/{os.path.basename(pasta)}.mp4"
+    vol = _volume(video)
+    if vol < MUDO_DB:
+        raise SystemExit(f"ERRO: vídeo SEM SOM ({vol:.0f} dB). Não envio ao TikTok; monte de novo com outro clipe.")
     r = tiktok_envio.enviar_rascunho(video)
     open(f"{pasta}/legenda.txt", "w", encoding="utf-8").write(cfg["legenda"])
     print(json.dumps({"tiktok": r, "video": video}, ensure_ascii=False))
