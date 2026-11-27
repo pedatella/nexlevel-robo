@@ -34,6 +34,10 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
    - Título que resume a piada e gera curiosidade: "A LUCIA NÃO TEM UM DIA DE PAZ NO GTA 6".
    - Gancho de 2,7 s com o pico ("mano ela caiu... lá embaixo") e depois o momento inteiro: o que estava acontecendo, o acontecimento e a reação do streamer. Nenhum trecho parado.
    - Câmera e jogo bem enquadrados, legenda legível. (O 001 juntou 2 clipes, mas o Lucas decidiu depois: UM clipe só por vídeo.)
+   EMPOLGAÇÃO É OBRIGATÓRIA (feedback do Lucas sobre o 008: "ficou bom mas não deu aquela empolgação"). O corte precisa ter pelo menos UM pico forte que dá vontade de mandar para um amigo:
+   - o streamer grita, explode de rir, se desespera ou xinga de raiva (reação forte, não só narrando);
+   - OU o jogo faz algo absurdo e inesperado (bug, morte ridícula, virada, susto).
+   Gameplay só narrada, mesmo bonita e limpa, NÃO serve: procure outro momento (os picos de `live` com força alta, 12 dB ou mais, costumam ser os melhores). Compare as opções e mande a MAIS empolgante, não a primeira que serve. Monte o corte para chegar no pico rápido (até ~15 s) e terminar logo depois da reação.
    Regras:
    - UM CLIPE SÓ POR VÍDEO (regra do Lucas, 27/11: vários cortes num vídeo só é informação demais). Nunca junte clipes diferentes. Do 001, copie a qualidade: gancho forte, momento completo, título certeiro, enquadramento.
    - Duração: o momento inteiro do clipe, de preferência 45 a 90 s. Escolha clipes LONGOS (45 s ou mais; na Kick há clipes de até 3 min). Clipe curto só se o momento for muito bom.

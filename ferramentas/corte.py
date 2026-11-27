@@ -33,6 +33,8 @@ FONTES = os.environ.get("FONTES", f"{RAIZ}/fontes")
 MARCA = f"{RAIZ}/marca"
 LOGO = f"{MARCA}/public/logo.png"
 ROXO_ASS = "&HF52C8B&"
+# melhor qualidade até 1440p (fica mais nítido ao reduzir para 1080), nunca a versão vertical automática da Twitch
+QUALIDADE = "best[height<=1440][format_id!*=portrait]/best[format_id!*=portrait]/best"
 
 
 def _url_clipe(canal, slug):
@@ -63,7 +65,7 @@ def clipes(canal, dias="7"):
 def baixar(pasta, canal, *slugs):
     b = f"{pasta}/brutos"; os.makedirs(b, exist_ok=True)
     for s in slugs:
-        subprocess.run(["yt-dlp", "-q", "-f", "best[height<=1080]/best", "--remux-video", "mp4", "-o", f"{b}/%(id)s.%(ext)s",
+        subprocess.run(["yt-dlp", "-q", "-f", QUALIDADE, "--remux-video", "mp4", "-o", f"{b}/%(id)s.%(ext)s",
                         "--write-info-json", _url_clipe(canal, s)], check=False)
     for j in sorted(glob.glob(f"{b}/*.info.json")):
         d = json.load(open(j)); f = f"{b}/{d['id']}.mp4"
@@ -93,7 +95,7 @@ def estender(pasta, slug, antes="45", depois="45"):
     ini = max(0, int(c["vod_offset"]) - int(antes)); fim = int(c["vod_offset"] + dur) + int(depois)
     b = f"{pasta}/brutos"; os.makedirs(b, exist_ok=True)
     nome = f"{c['video_id']}_{ini}"
-    subprocess.run(["yt-dlp", "-q", "-f", "best[height<=1080]/best", "--download-sections", f"*{ini}-{fim}", "--remux-video", "mp4",
+    subprocess.run(["yt-dlp", "-q", "-f", QUALIDADE, "--download-sections", f"*{ini}-{fim}", "--remux-video", "mp4",
                     "-o", f"{b}/{nome}.%(ext)s", f"https://www.twitch.tv/videos/{c['video_id']}"], check=False)
     f = f"{b}/{nome}.mp4"
     if not os.path.exists(f):
@@ -160,7 +162,7 @@ def trecho(pasta, canal, video_id, ini, fim):
     """Baixa um pedaço da live gravada (segundos ini a fim) para brutos/, com grade e quadro, como um clipe."""
     b = f"{pasta}/brutos"; os.makedirs(b, exist_ok=True)
     ini, fim = max(0, int(float(ini))), int(float(fim)); nome = f"{video_id}_{ini}"
-    subprocess.run(["yt-dlp", "-q", "-f", "best[height<=1080]/best", "--download-sections", f"*{ini}-{fim}", "--remux-video", "mp4",
+    subprocess.run(["yt-dlp", "-q", "-f", QUALIDADE, "--download-sections", f"*{ini}-{fim}", "--remux-video", "mp4",
                     "-o", f"{b}/{nome}.%(ext)s", f"https://www.twitch.tv/videos/{video_id}"], check=False)
     f = f"{b}/{nome}.mp4"
     if not os.path.exists(f):
@@ -286,11 +288,11 @@ Dialogue: 1,{_t(0)},{_t(dur)},Cred,,0,0,0,,{cred}
     for i, (arq, ini, fim) in enumerate(trechos):
         d = fim - ini
         fil.append(f"color=c=0x0A0A0F:s=1080x1920:r=30:d={d}[f{i}]")
-        norm = f"[{i}:v]fps=30,scale=1920:1080,setsar=1"      # todo clipe vira 1920x1080 (as caixas são medidas nesse quadro)
+        norm = f"[{i}:v]fps=30,scale=1920:1080:flags=lanczos,setsar=1"      # todo clipe vira 1920x1080 (as caixas são medidas nesse quadro)
         if cfg.get("cam"):
             fil.append(f"{norm},split[a{i}][b{i}]")
-            fil.append(f"[a{i}]crop={cw}:{ch}:{cx}:{cy},scale=1080:690[c{i}]")
-            fil.append(f"[b{i}]crop={jw}:{jh}:{jx}:{jy},scale=1080:990[j{i}]")
+            fil.append(f"[a{i}]crop={cw}:{ch}:{cx}:{cy},scale=1080:690:flags=lanczos,unsharp=5:5:1.0:5:5:0.0,eq=contrast=1.04:saturation=1.05[c{i}]")
+            fil.append(f"[b{i}]crop={jw}:{jh}:{jx}:{jy},scale=1080:990:flags=lanczos,unsharp=3:3:0.4[j{i}]")
             fil.append(f"[f{i}][c{i}]overlay=0:240[x{i}];[x{i}][j{i}]overlay=0:930[v{i}]")
         else:   # sem câmera: jogo inteiro (16:9, sem cortar) sobre um fundo desfocado dele mesmo
             fil.append(f"{norm},split[a{i}][b{i}]")
