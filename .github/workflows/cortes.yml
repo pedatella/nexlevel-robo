@@ -5,18 +5,48 @@ on:
     - cron: "17 12 * * *"  # 9h17 Brasília (rascunho chega antes das 11h, mesmo com atraso do GitHub)
     - cron: "17 18 * * *"  # 15h17 Brasília (antes das 17h)
     - cron: "17 22 * * *"  # 19h17 Brasília (antes das 21h)
+    # reservas: o GitHub às vezes não dispara um horário (aconteceu em 27/11 às 15h17).
+    # 30 min depois, cada reserva confere se o principal rodou; se não rodou, faz o corte.
+    - cron: "47 12 * * *"
+    - cron: "47 18 * * *"
+    - cron: "47 22 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
   issues: write
+  actions: read
 
 concurrency:
   group: corte
   cancel-in-progress: false
 
 jobs:
+  checar:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    outputs:
+      rodar: ${{ steps.c.outputs.rodar }}
+    steps:
+      - id: c
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CRON: ${{ github.event.schedule }}
+        run: |
+          rodar=true
+          if [ "${CRON%% *}" = "47" ]; then
+            desde=$(date -u -d '-150 min' +%Y-%m-%dT%H:%M:%SZ)
+            n=$(gh run list -R "$GITHUB_REPOSITORY" -w cortes.yml -L 20 --json databaseId,createdAt,status,conclusion \
+              --jq "[.[] | select(.databaseId != ${{ github.run_id }} and .createdAt >= \"$desde\" and (.status != \"completed\" or .conclusion == \"success\"))] | length")
+            [ "$n" -gt 0 ] && rodar=false
+            echo "reserva: $n execução(ões) recentes -> rodar=$rodar"
+          fi
+          echo "rodar=$rodar" >> "$GITHUB_OUTPUT"
+
   corte:
+    needs: checar
+    if: needs.checar.outputs.rodar == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 200
     steps:
