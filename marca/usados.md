@@ -24,3 +24,5 @@
 | clip_01M7XW8N1G9TTF698X70GZYKWR | coringa (kick) | cena sugestiva do GTA VI |
 | 3228469390 | bistecone | conteúdo sexual/ofensivo na fala |
 | 1434403185 | alanzoka | legenda queimada na imagem e personagem seminu |
+| clip_01M7XAN6B2RJ5H3G8FX5S3ZYMM | coringa (kick) | nudez / cena sexual (set de filmagem) do GTA VI |
+| clip_01M80JF2B3K9SZ6DF3W6JBMJK7 | coringa (kick) | nudez (chuveiro) do GTA VI |
