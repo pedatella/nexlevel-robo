@@ -29,8 +29,9 @@ jobs:
           sudo apt-get install -y -qq ffmpeg > /dev/null 2>&1 || true
           V=$(ls corte/*/corte-*.mp4 corte/corte-*.mp4 2>/dev/null | head -1); echo "vídeo: $V"
           L=$(ls corte/*/legenda.txt corte/legenda.txt 2>/dev/null | head -1)
-          [ -n "$L" ] && curl -s "https://api.telegram.org/bot$TG_TOKEN/sendMessage" --data-urlencode "chat_id=$TG_CHAT" \
-            --data-urlencode "text=Legenda para colar:
-
-$(cat "$L")" -o /dev/null -w "Telegram HTTP %{http_code}\n"
+          if [ -n "$L" ]; then
+            { echo "Legenda para colar:"; echo; cat "$L"; } > tg.txt
+            curl -s "https://api.telegram.org/bot$TG_TOKEN/sendMessage" --data-urlencode "chat_id=$TG_CHAT" \
+              --data-urlencode "text@tg.txt" -o /dev/null -w "Telegram HTTP %{http_code}\n"
+          fi
           bash ferramentas/telegram_video.sh "$V"
