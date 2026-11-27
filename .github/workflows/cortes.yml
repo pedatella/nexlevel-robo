@@ -2,9 +2,9 @@ name: Corte NexLevel
 
 on:
   schedule:
-    - cron: "0 13 * * *"   # 10h Brasília (rascunho chega antes das 11h)
-    - cron: "0 19 * * *"   # 16h Brasília (antes das 17h)
-    - cron: "0 23 * * *"   # 20h Brasília (antes das 21h)
+    - cron: "17 12 * * *"  # 9h17 Brasília (rascunho chega antes das 11h, mesmo com atraso do GitHub)
+    - cron: "17 18 * * *"  # 15h17 Brasília (antes das 17h)
+    - cron: "17 22 * * *"  # 19h17 Brasília (antes das 21h)
   workflow_dispatch:
 
 permissions:
