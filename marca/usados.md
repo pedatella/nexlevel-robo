@@ -26,3 +26,10 @@
 | 1434403185 | alanzoka | legenda queimada na imagem e personagem seminu |
 | clip_01M7XAN6B2RJ5H3G8FX5S3ZYMM | coringa (kick) | nudez / cena sexual (set de filmagem) do GTA VI |
 | clip_01M80JF2B3K9SZ6DF3W6JBMJK7 | coringa (kick) | nudez (chuveiro) do GTA VI |
+| clip_01M7Y3VDY5F5BJD6KHJCTXRQ5X | coringa (kick) | nudez/cena sexual do GTA VI e fala sexual |
+| clip_01M8038X7K8WTB24H9D4VWV52N | coringa (kick) | conteúdo sexual (celular) do GTA VI |
+| clip_01M7Y3RGK1KRXS4H68WF8N2B6J | coringa (kick) | cena sugestiva (bronzeador) do GTA VI |
+| clip_01M80J61WHQYYP57HA1M303C0Q | coringa (kick) | lingerie / cena sugestiva do GTA VI |
+| 424635996 | alanzoka | nudez do GTA VI |
+| 2825613693 | alanzoka | cena sexual do GTA VI |
+| 593161209 | alanzoka | cena sugestiva, legenda queimada |
