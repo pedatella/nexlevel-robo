@@ -6,6 +6,7 @@
 | 2026-11-27 | corte-004 | alanzoka | 1890495947, 2695720706 | ELE VIU UM CARRO VOANDO NO GTA 6 |
 | 2026-11-27 | corte-005 | bistecone | 2219145806 | ABRIU A LIVE 22H E JÁ QUER DORMIR |
 | 2026-11-27 | corte-006 | alanzoka | 3011843597 | TRÂNSITO CAÓTICO NO GTA 6 |
+| 2026-11-27 | corte-007 | bistecone | 797269546 | ERA TUDO UMA ARMADILHA NO GTA 6 |
 
 ## Clipes descartados (nunca usar)
 | clipe | criador | motivo |
@@ -33,3 +34,11 @@
 | 424635996 | alanzoka | nudez do GTA VI |
 | 2825613693 | alanzoka | cena sexual do GTA VI |
 | 593161209 | alanzoka | cena sugestiva, legenda queimada |
+| clip_01M80WXCNBJMC6ZCM00SA1F7GW | coringa (kick) | cena sexual (loja) do GTA VI |
+| clip_01M80D92258XTXA696JVJCM5SP | coringa (kick) | nudez (chuveiro) do GTA VI |
+| clip_01M82JCF28R91P550ZXEPJ9JXB | coringa (kick) | começo parado, streamer sem camisa, sem momento claro |
+| 3288955987 | bistecone | nudez do GTA VI |
+| 4201093579 | dona | cassino/bet |
+| 662230674 | kosky | publi/animação, sem jogo |
+| 1839382586 | yuuri22 | conversa, fundo de cassino |
+| 3321181877 | yuuri22 | conversa, fundo de cassino |
