@@ -8,7 +8,7 @@ Fonte de verdade: `dna.json` desta pasta (workspace `nexlevel` no FLYD). Isto é
 - Fontes: Inter Black/Bold no título e nas legendas.
 
 ## Formato
-- 9:16, 1080x1920, 45 a 90 s: UM momento só, com começo, meio e fim (regra do Lucas em 27/11: nunca misturar momentos diferentes). Para alongar, usar o trecho da live em volta do clipe (corte.py estender), nunca outro momento.
+- 9:16, 1080x1920, 61 a 90 s, no modelo do corte 001: um momento longo, ou 2 a 3 clipes do mesmo criador e jogo com a mesma piada, ligados pelo título. Nunca momentos soltos.
 - Layout: câmera do streamer em cima, gameplay embaixo; sem câmera, gameplay em tela cheia.
 - Título fixo no topo, 2 linhas, caixa alta, com emoji (ex.: "ELE NÃO ESPERAVA ISSO 💀").
 - Legendas: TODA a fala (acessibilidade), 2 a 4 palavras por vez, sincronizadas; tamanho médio legível, centro-baixo sem cobrir rosto nem jogo; branco com contorno preto, palavra-chave em #8B2CF5; sons relevantes entre colchetes ([GRITO], [SUSTO]).

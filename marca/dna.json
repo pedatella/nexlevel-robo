@@ -64,7 +64,7 @@
       "reação depois do clímax (o que mais gera comentário)",
       "fechamento em até 5 s: pergunta para comentários ou 'parte 2?', final que emende com o começo"
     ],
-    "duracao_s": [45, 90],
+    "duracao_s": [61, 90],
     "estilo_video": "Corte vertical 1080x1920: câmera do streamer em cima e gameplay embaixo (gameplay em tela cheia quando não houver câmera). Título fixo no topo, legenda completa da fala, zoom rápido nos picos, efeito sonoro leve. Selo NexLevel discreto num canto. Elemento de tensão do começo ao fim: o espectador quer ver a reação final.",
     "edicao": "ritmo rápido, cortes secos nas pausas longas, zoom de reação nos picos; nada encobre a voz do streamer",
     "narracao": "sem narração: só o áudio original do criador, com efeitos sonoros leves nos picos (zoom, susto); sem música de fundo",
@@ -76,7 +76,7 @@
     "humor": "zoeira gamer de situação; nunca ofensiva (aparência, religião, raça, orientação sexual) e nunca às custas de alguém de fora da live",
     "ocultar_fontes": false,
     "motor_de_video": "video-studio (skill /video, sub-skill video-edicao)",
-    "entrega": "1080x1920 libx264 ~14 Mbps, AAC 256k, 45 a 90 s, um momento só",
+    "entrega": "1080x1920 libx264 ~14 Mbps, AAC 256k, 61 a 90 s, no modelo do corte 001",
     "creditos": "na tela, fixo durante o vídeo todo: 'Corte da live de <Criador> · twitch.tv/<canal>' (ou o link do vídeo do YouTube); na legenda: o mesmo crédito com link e @ do criador",
     "criadores": ["Alanzoka", "The Darkness", "Cellbit", "Davy Jones", "Bistecone", "Kosky", "Coringa"],
     "referencias_virais": ["PENDENTE: levantar 3 a 5 cortes de games com bom desempenho no TikTok BR (perfil, views, duração, recurso que vale copiar) e preencher"],
