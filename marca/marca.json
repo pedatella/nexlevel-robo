@@ -1,0 +1,7 @@
+{
+  "nome": "NexLevel",
+  "cores": { "fundo": "#0A0A0F", "superficie": "#16121F", "texto": "#FFFFFF", "suave": "#B9B4C7", "destaque": "#8B2CF5", "destaque2": "#E6E6EA", "linha": "#2A2140" },
+  "fontes": { "titulo": "Inter", "texto": "Inter" },
+  "raio": 18,
+  "logo": "public/logo.png"
+}

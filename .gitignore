@@ -1,0 +1,7 @@
+cortes/
+saida.txt
+erro.txt
+resumo.md
+aviso.md
+*.tmp
+__pycache__/

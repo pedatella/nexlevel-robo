@@ -1,0 +1,117 @@
+{
+  "identidade": {
+    "nome": "NexLevel",
+    "nicho": "cortes de lives e vídeos de streamers e youtubers gamers brasileiros",
+    "descricao": "Perfil de TikTok (@nexlevel31) que publica os melhores momentos de lives e vídeos de criadores de games brasileiros, sempre com crédito e link da origem.",
+    "objetivo": "Crescer rápido e alcançar um grande público gamer para monetizar o perfil (Programa de Criadores do TikTok).",
+    "posicionamento": "O perfil que garimpa as lives inteiras e entrega só o momento que faz o gamer marcar o amigo.",
+    "personalidade": "zoeiro, gamer de verdade, rápido, respeitoso com os criadores",
+    "comunicacao": "zoeira gamer: gíria, emoji (💀😭🔥), frases curtas, tom de 'mano, olha isso'; nunca ofensivo",
+    "publico": [
+      "público gamer brasileiro que consome TikTok (vídeos amplos)",
+      "fãs dos criadores cortados (Alanzoka, The Darkness, Cellbit, Davy Jones, Bistecone, Kosky, Coringa)",
+      "quem curte terror, humor e rage de gameplay"
+    ],
+    "regiao": "Brasil (português)",
+    "valores": ["crédito sempre", "momento real, sem inventar", "zoeira sem ofensa", "respeito aos criadores"],
+    "vocabulario": ["mano", "pai tá on", "gameplay", "live", "jumpscare", "clutch", "rage", "chat", "💀", "😭", "🔥"],
+    "expressoes_permitidas": ["Corte da live de", "parte 2?", "marca o amigo que"],
+    "expressoes_proibidas": [
+      "canal oficial",
+      "perfil oficial",
+      "exposed",
+      "acabou a carreira",
+      "cancelado",
+      "bet",
+      "aposta",
+      "cassino",
+      "skin grátis",
+      "ganhe grátis"
+    ],
+    "personagem": null,
+    "identidade_visual": {
+      "cores": {"roxo_neon": "#8B2CF5", "preto": "#0A0A0F", "prata": "#E6E6EA", "branco": "#FFFFFF"},
+      "logo": "brands/nexlevel/public/logo.png (oficial do dono, recortado em círculo com fundo transparente)",
+      "origem": "foto de perfil oficial do @nexlevel31",
+      "proibido": "cores fora da paleta; logo distorcido; elementos que imitem a marca do criador cortado"
+    }
+  },
+  "diretrizes": {
+    "pilares": ["terror e susto", "humor", "rage e desespero", "jogada absurda", "interação com chat e outros streamers"],
+    "temas": [
+      "jumpscare em jogo de terror",
+      "streamer perdendo a paciência em jogo difícil",
+      "piada ou conversa absurda na live",
+      "bug ou sorte inacreditável",
+      "clutch ou jogada absurda",
+      "doação ou mensagem engraçada do chat",
+      "call com outros streamers"
+    ],
+    "tipos_conteudo": ["corte de live", "corte de vídeo do YouTube", "compilado de momentos do mesmo criador", "série 'parte 1/parte 2'"],
+    "formatos": ["corte 9:16 com câmera em cima e jogo embaixo", "corte 9:16 só gameplay em tela cheia"],
+    "ganchos": [
+      "começar no pico (grito, susto, risada) e só depois voltar para o contexto",
+      "título fixo no topo com curiosidade: 'ELE NÃO ESPERAVA ISSO 💀'",
+      "pergunta direta no topo: 'você aguentaria isso?'",
+      "reação extrema no primeiro segundo com zoom no rosto",
+      "'o chat avisou e ele não ouviu…'"
+    ],
+    "estrutura_roteiro": [
+      "gancho em até 2 s: o pico do momento",
+      "contexto rápido: o que estava acontecendo antes",
+      "escalada: tensão ou piada crescendo, com zoom nos picos",
+      "clímax: o momento principal completo",
+      "reação depois do clímax (o que mais gera comentário)",
+      "fechamento em até 5 s: pergunta para comentários ou 'parte 2?', final que emende com o começo"
+    ],
+    "duracao_s": [61, 90],
+    "estilo_video": "Corte vertical 1080x1920: câmera do streamer em cima e gameplay embaixo (gameplay em tela cheia quando não houver câmera). Título fixo no topo, legenda completa da fala, zoom rápido nos picos, efeito sonoro leve. Selo NexLevel discreto num canto. Elemento de tensão do começo ao fim: o espectador quer ver a reação final.",
+    "edicao": "ritmo rápido, cortes secos nas pausas longas, zoom de reação nos picos; nada encobre a voz do streamer",
+    "narracao": "sem narração: só o áudio original do criador, com efeitos sonoros leves nos picos (zoom, susto); sem música de fundo",
+    "legendas": "acessibilidade: legenda de TODA a fala do streamer, 2 a 4 palavras por vez, sincronizada; tamanho médio legível, centro-baixo sem cobrir rosto nem jogo; branco com contorno preto, palavra-chave em roxo neon #8B2CF5; sons relevantes entre colchetes ([GRITO], [SUSTO])",
+    "capa": "frame do pico da reação com o título do topo em 2 linhas, mesma moldura roxa em todos os vídeos",
+    "cta_padrao": "Comenta aí 👇 e segue a NexLevel pra mais cortes 🔥",
+    "legenda_da_publicacao": "Linha 1: o que acontece no corte, em zoeira gamer, com 1 a 2 emojis. Linha 2: 'Corte da live de <Criador> · <link da origem>' e @ do criador no TikTok. Linha 3: pergunta para comentários. Exatamente 5 hashtags.",
+    "formalidade": "baixa",
+    "humor": "zoeira gamer de situação; nunca ofensiva (aparência, religião, raça, orientação sexual) e nunca às custas de alguém de fora da live",
+    "ocultar_fontes": false,
+    "motor_de_video": "video-studio (skill /video, sub-skill video-edicao)",
+    "entrega": "1080x1920 libx264 ~14 Mbps, AAC 256k, 61 a 90 s",
+    "creditos": "na tela, fixo durante o vídeo todo: 'Corte da live de <Criador> · twitch.tv/<canal>' (ou o link do vídeo do YouTube); na legenda: o mesmo crédito com link e @ do criador",
+    "criadores": ["Alanzoka", "The Darkness", "Cellbit", "Davy Jones", "Bistecone", "Kosky", "Coringa"],
+    "referencias_virais": ["PENDENTE: levantar 3 a 5 cortes de games com bom desempenho no TikTok BR (perfil, views, duração, recurso que vale copiar) e preencher"],
+    "referencias_aprovadas": "PENDENTE: pasta dos primeiros cortes aprovados pelo dono"
+  },
+  "conhecimento": {
+    "documentos": [],
+    "fontes_confiaveis": ["a própria live ou vídeo de origem (VOD na Twitch, vídeo no YouTube)", "canais oficiais dos criadores"],
+    "verificar_sempre": [
+      "nome correto do criador e link exato da live ou vídeo de origem",
+      "criador está na lista de quem libera cortes (autorização registrada em brands/nexlevel/autorizacoes/)",
+      "contexto dito no título ou legenda aparece de fato no corte",
+      "nome do jogo escrito corretamente"
+    ],
+    "restricoes": [
+      "só cortar criadores que liberam cortes; sem autorização registrada, não produz",
+      "nunca dizer ou sugerir que o perfil é do criador ou oficial",
+      "crédito com link da origem sempre, na tela e na legenda",
+      "nunca inventar fofoca, polêmica ou contexto que não está no corte; sem título enganoso sobre a vida pessoal",
+      "sem piada ofensiva (aparência, religião, raça, orientação sexual)",
+      "sem nudez, violência real ou dados pessoais vazados na live (endereço, telefone, documentos)",
+      "sem link ou menção de aposta, cassino, bet ou golpe de skin grátis",
+      "corte com edição própria (legenda, título, enquadramento); nunca repostar o vídeo original cru"
+    ],
+    "permanente": []
+  },
+  "estrategia": {
+    "objetivos": ["crescimento de seguidores", "alcance", "monetização pelo Programa de Criadores do TikTok"],
+    "plataformas": ["tiktok"],
+    "plataformas_futuras": ["youtube shorts"],
+    "frequencia": "3 vídeos por dia às 11:00, 17:00 e 21:00",
+    "mix_conteudo": "40% terror e susto, 30% humor, 15% rage, 15% jogada absurda e interação; revezar criadores para não repetir o mesmo duas vezes seguidas",
+    "hashtags": ["#cortes", "#gamer", "#gameplay", "#<criador>", "#<jogo>"],
+    "comercial": "sem venda no vídeo; monetização pelo programa de criadores",
+    "automacao": "busca automática das lives e vídeos recentes dos criadores autorizados; publicação automática depois que o dono aprovar o primeiro vídeo de teste",
+    "sucesso": ["visualizações", "retenção até o fim", "compartilhamentos", "comentários", "seguidores ganhos"]
+  }
+}

@@ -1,0 +1,89 @@
+name: Corte NexLevel
+
+on:
+  schedule:
+    - cron: "0 13 * * *"   # 10h Brasília (rascunho chega antes das 11h)
+    - cron: "0 19 * * *"   # 16h Brasília (antes das 17h)
+    - cron: "0 23 * * *"   # 20h Brasília (antes das 21h)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: corte
+  cancel-in-progress: false
+
+jobs:
+  corte:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Programas (ffmpeg, fontes, Python, Claude)
+        run: |
+          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg ttf-mscorefonts-installer > /dev/null
+          pip install -q -r requirements.txt
+          npm install -g @anthropic-ai/claude-code > /dev/null
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-small
+
+      - name: Diretor de cortes
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+        run: |
+          mkdir -p cortes
+          claude -p "$(cat ferramentas/prompt.md)" \
+            --permission-mode acceptEdits \
+            --allowedTools "Bash" "Read" "Write" "Edit" "Glob" "Grep" \
+            > saida.txt 2> erro.txt || true
+          [ -s resumo.md ] || { echo "# FALHOU: o diretor não terminou"; echo; tail -c 3000 saida.txt; tail -c 2000 erro.txt; } > resumo.md
+          cat resumo.md
+
+      - name: Vídeo para baixar
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: corte
+          path: |
+            cortes/*/*.mp4
+            cortes/*/qa.jpg
+            cortes/*/legenda.txt
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Guardar estado (clipes usados, token do TikTok, resumo)
+        if: always()
+        run: |
+          D=$(TZ=America/Sao_Paulo date +%Y-%m-%d_%H%M)
+          [ -f resumo.md ] && cp resumo.md "resumos/$D.md"
+          git config user.name "robo-nexlevel"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add marca/usados.md estado/tiktok.enc resumos/
+          git diff --cached --quiet || git commit -q -m "corte $D"
+          git pull -q --rebase && git push -q
+
+      - name: Avisar o Lucas
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          T=$(head -1 resumo.md | sed 's/^# //')
+          { cat resumo.md; echo; echo "🎬 Vídeo e prévia: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > aviso.md
+          gh issue create --title "$T" --body-file aviso.md
