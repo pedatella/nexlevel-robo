@@ -102,14 +102,14 @@ jobs:
           git diff --cached --quiet || git commit -q -m "corte $D"
           git pull -q --rebase && git push -q
 
-      - name: Avisar o Lucas
+      - name: Registro do corte (issue, sem e-mail)
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           T=$(head -1 resumo.md | sed 's/^# //')
-          { echo "@pedatella o vídeo já está nos rascunhos do seu TikTok. Legenda para colar:"; echo; cat resumo.md; echo; echo "🎬 Vídeo e prévia: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > aviso.md
-          gh issue create --title "$T" --body-file aviso.md --assignee pedatella
+          { cat resumo.md; echo; echo "🎬 Vídeo e prévia: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > aviso.md
+          gh issue create --title "$T" --body-file aviso.md   # registro silencioso (sem e-mail); o aviso vai pelo Telegram
 
       - name: Avisar no Telegram
         if: always()
