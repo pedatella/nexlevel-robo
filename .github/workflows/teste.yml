@@ -21,5 +21,4 @@ jobs:
         run: |
           cd ferramentas
           python3 corte.py live paulinholokobr 6
-          V=$(python3 corte.py live paulinholokobr 1 2>/dev/null | true)
           git -C .. checkout -- marca 2>/dev/null || true
