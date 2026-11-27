@@ -43,13 +43,14 @@ def candidatos():
     reserva = f"{RAIZ}/marca/olheiro_reserva.txt"
     if os.path.exists(reserva):
         nomes += [l.strip() for l in open(reserva) if l.strip() and not l.startswith("#")]
-    vistos, out = set(), []
-    for n in nomes:
+    # posição no ranking de espectadores (0 = mais assistido); a lista reserva fica sem posição
+    vistos, out, n_rank = set(), [], len(nomes) - (len(open(reserva).read().split()) if os.path.exists(reserva) else 0)
+    for k, n in enumerate(nomes):
         n = n.lower()
         if n in vistos or n in {"channels", "games", "statistics", "subscribers", "languages", "search", "login"}:
             continue
-        vistos.add(n); out.append(n)
-    return out[:60]
+        vistos.add(n); out.append((n, len([x for x in out if x[1] is not None]) if k < n_rank else None))
+    return out[:70]
 
 
 def medir(canal):
@@ -76,9 +77,16 @@ def medir(canal):
             "jogos": sorted(set(jogos)), "parte_jogo": len(de_jogo) / max(1, len(jogos)), "cassino": cassino}
 
 
+def famoso(m):
+    """Regra do Lucas (27/11): só streamer com público grande, que o público reconhece."""
+    no_topo = m.get("pos") is not None and m["pos"] < 15
+    return m["top"] >= 1000 and (no_topo or m["views"] >= 5000)
+
+
 def nota(m):
-    # material (clipes e longos), viralidade (views do melhor clipe) e foco em jogo
-    return (min(m["clipes"], 80) * 1.0 + m["longos"] * 2.0 + min(m["top"], 5000) / 100.0) * m["parte_jogo"]
+    # PÚBLICO primeiro (views do melhor clipe, views da semana, posição no ranking); volume de clipes só desempata
+    rank = (15 - m["pos"]) * 300 if m.get("pos") is not None and m["pos"] < 15 else 0
+    return (m["top"] + m["views"] / 5 + rank + m["longos"] * 5 + min(m["clipes"], 80)) * m["parte_jogo"]
 
 
 def liberar(m):
@@ -110,14 +118,16 @@ if __name__ == "__main__":
     n_novos = int(sys.argv[1]) if len(sys.argv) > 1 else 2
     conhecidos = ja_conhecidos()
     medidos = []
-    for c in candidatos():
+    for c, pos in candidatos():
         if c in conhecidos:
             continue
         m = medir(c)
         if not m:
             continue
-        print(c, m["clipes"], m["longos"], m["top"], m["jogos"], round(nota(m), 1))
-        if m["cassino"] or m["parte_jogo"] < 0.5 or m["clipes"] < 10:
+        m["pos"] = pos
+        print(c, "pos", pos, "| clipes", m["clipes"], "longos", m["longos"], "| top", m["top"], "semana", m["views"], m["jogos"],
+              "| nota", round(nota(m), 1), "| famoso" if famoso(m) else "")
+        if m["cassino"] or m["parte_jogo"] < 0.5 or m["clipes"] < 10 or not famoso(m):
             continue
         medidos.append(m)
     medidos.sort(key=nota, reverse=True)
