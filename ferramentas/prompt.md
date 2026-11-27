@@ -51,7 +51,12 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
    - a legenda não cobre o rosto;
    - o crédito está embaixo e o selo aparece;
    - a tira mostra UM momento só, do mesmo clipe, do começo ao fim: sem outra cena, sem tela preta, sem trecho parado.
-   BORRÃO: se o clipe tem cena imprópria do jogo, rode `python3 corte.py quadros <pasta>` (e `quadros <pasta> 40` etc. para o resto). Cada quadro traz o segundo do VÍDEO FINAL escrito em amarelo. Anote TODOS os segundos com nudez ou cena sexual e ponha em `"borrar": [{"ini": X, "fim": Y}]` no corte.json, com 1 s de folga antes e depois. Monte de novo e rode `quadros` outra vez: nenhum quadro pode mostrar a cena sem borrão. Liste no resumo quais trechos foram borrados.
+   BORRÃO (só onde é impróprio, nunca a tela toda; pedido do Lucas):
+   1. Monte uma vez sem borrão. Rode `python3 corte.py quadros <pasta>` (e `quadros <pasta> 40` etc. para o resto). Cada quadro traz o segundo do VÍDEO FINAL em amarelo. Anote os segundos com nudez ou cena sexual.
+   2. Para cada trecho, rode `python3 corte.py quadro <pasta> <segundo>`: sai a tela final em tamanho real (1080x1920) com grade numerada de 100 em 100 px. Meça a caixa [x, y, largura, altura] que cobre SÓ a parte imprópria (corpo do personagem), com uma folga de uns 40 px.
+   3. Se a parte imprópria se mexe, divida em trechos curtos (1 a 3 s), cada um com a sua caixa.
+   4. Escreva `"borrar": [{"ini": X, "fim": Y, "caixa": [x, y, w, h]}, ...]` no corte.json, com 0,5 s de folga no tempo. Monte de novo.
+   5. Confira com `quadros` e `quadro` de novo: nenhum quadro pode mostrar a parte imprópria sem borrão, e o resto do jogo continua nítido. Se não der para cobrir direito, use uma caixa maior. Liste no resumo os trechos borrados.
    Se algo estiver errado, ajuste o corte.json e monte de novo. Se não der para ficar bom, troque de clipe. Pergunte-se: "eu assistiria isso até o fim?" Se não, não envie.
 8. `python3 corte.py publicar <pasta>/corte.json`. Ele envia o vídeo como rascunho para a caixa de entrada do TikTok do Lucas; ele publica pelo app colando a legenda.
 9. Acrescente a linha do corte na primeira tabela de `marca/usados.md` (mesmo formato). Clipes que você descartou por conteúdo proibido vão na tabela "Clipes descartados".

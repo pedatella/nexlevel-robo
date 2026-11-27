@@ -9,6 +9,7 @@
   $PY corte.py montar <pasta>/corte.json             monta o vídeo 1080x1920 (título, câmera, jogo, legendas, crédito, selo)
   (canal da Twitch sem prefixo; Kick com prefixo: kick:coringa)
   $PY corte.py quadros <pasta> [ini] [fim]          folha com 1 quadro por segundo do vídeo final, com o segundo escrito
+  $PY corte.py quadro <pasta> <segundo>             1 quadro em tamanho real com grade de 100 px (medir a caixa do borrão)
   $PY corte.py publicar <pasta>/corte.json           envia como rascunho para a caixa de entrada do TikTok
 
 corte.json:
@@ -19,7 +20,7 @@ corte.json:
   "jogo": [x, y, w, h],                   # recorte do jogo; proporção ~1080:990 (ex.: 1063x975) e fora da câmera
   "trechos": [{"arquivo": "<id>.mp4", "ini": 0.0, "fim": 30.0}, ...],   # gancho primeiro; total 61 a 90 s
   "legenda": "texto da publicação (formato do DNA, 5 hashtags)",
-  "borrar": [{"ini": 12.0, "fim": 15.5}]  # opcional: borra o jogo nesses segundos do vídeo final (cena imprópria)
+  "borrar": [{"ini": 12.0, "fim": 15.5, "caixa": [300, 1200, 400, 500]}]  # opcional: borra SÓ essa caixa (tela final 1080x1920) nesses segundos
 }
 """
 import glob, json, os, subprocess, sys
@@ -212,14 +213,22 @@ Dialogue: 1,{_t(0)},{_t(dur)},Cred,,0,0,0,,{cred}
     fil.append("".join(f"[v{i}][s{i}]" for i in range(n)) + f"concat=n={n}:v=1:a=1[vc][ac]")
     fil.append(f"[{n}:v]scale=150:-1,format=rgba[logo]")
     linhas = "drawbox=x=0:y=234:w=1080:h=6:color=0x8B2CF5:t=fill" + (",drawbox=x=0:y=926:w=1080:h=6:color=0x8B2CF5:t=fill" if cfg.get("cam") else "")
-    # borrar: [{"ini": s, "fim": s}] no tempo do VÍDEO FINAL -> borra forte a área do jogo nesses intervalos
+    # borrar: [{"ini": s, "fim": s, "caixa": [x, y, w, h]}] no tempo e na tela do VÍDEO FINAL (1080x1920).
+    # Borra SÓ a caixa (a parte imprópria); sem "caixa", borra a área toda do jogo.
     bor = cfg.get("borrar") or []
-    if bor:
-        quando = "+".join(f"between(t,{float(x['ini']):.2f},{float(x['fim']):.2f})" for x in bor)
-        y0, alt = (930, 990) if cfg.get("cam") else (240, 1680)
-        fil.append(f"[vc]split[vo][vx];[vx]crop=1080:{alt}:0:{y0},boxblur=60:6,eq=brightness=-0.15[vbl]")
-        fil.append(f"[vo][vbl]overlay=0:{y0}:enable='{quando}'[vcb]")
-    fil.append(f"[{'vcb' if bor else 'vc'}]{linhas}[vb]")
+    atual = "vc"
+    for k, x in enumerate(bor):
+        if x.get("caixa"):
+            bx, by, bw, bh = [int(v) // 2 * 2 for v in x["caixa"]]
+        else:
+            bx, by, bw, bh = (0, 930, 1080, 990) if cfg.get("cam") else (0, 240, 1080, 1680)
+        bw = max(2, min(bw, 1080 - bx)); bh = max(2, min(bh, 1920 - by))
+        quando = f"between(t,{float(x['ini']):.2f},{float(x['fim']):.2f})"
+        r = max(2, min(40, min(bw, bh) // 4))
+        fil.append(f"[{atual}]split[o{k}][c{k}];[c{k}]crop={bw}:{bh}:{bx}:{by},boxblur={r}:4[bl{k}]")
+        fil.append(f"[o{k}][bl{k}]overlay={bx}:{by}:enable='{quando}'[b{k}]")
+        atual = f"b{k}"
+    fil.append(f"[{atual}]{linhas}[vb]")
     fil.append("[vb][logo]overlay=W-w-24:252:shortest=1[vl]")
     fil.append(f"[vl]subtitles={pasta}/legendas.ass:fontsdir={FONTES}[vf]")
     fil.append("[ac]loudnorm=I=-14:TP=-1.5:LRA=11[af]")
@@ -251,6 +260,19 @@ def quadros(pasta, ini="0", fim=""):
     print("ok", out, f"{ini:.0f}s a {fim:.0f}s")
 
 
+def quadro(pasta, segundo):
+    """Um quadro do vídeo final em tamanho real (1080x1920) com grade de 100 px numerada: serve para medir a caixa do borrão."""
+    saida = f"{pasta}/{os.path.basename(os.path.abspath(pasta))}.mp4"
+    fonte = f"{RAIZ}/fontes/ArchivoBlack-Regular.ttf"
+    linhas = ",".join([f"drawbox=x={x}:y=0:w=2:h=1920:color=yellow@0.6:t=fill" for x in range(100, 1080, 100)] +
+                      [f"drawbox=x=0:y={y}:w=1080:h=2:color=yellow@0.6:t=fill" for y in range(100, 1920, 100)])
+    nums = ",".join([f"drawtext=fontfile={fonte}:text='{x}':x={x + 4}:y=4:fontsize=22:fontcolor=yellow:borderw=2" for x in range(100, 1080, 100)] +
+                    [f"drawtext=fontfile={fonte}:text='{y}':x=4:y={y + 4}:fontsize=22:fontcolor=yellow:borderw=2" for y in range(100, 1920, 100)])
+    out = f"{pasta}/quadro_{float(segundo):.0f}s.png"
+    subprocess.run([FF, "-v", "error", "-y", "-ss", str(segundo), "-i", saida, "-frames:v", "1", "-vf", f"{linhas},{nums}", out], check=True)
+    print("ok", out)
+
+
 def publicar(cfg_path):
     """Envia o vídeo para a caixa de entrada do TikTok (@nexlevel31) e guarda a legenda para o Lucas colar."""
     cfg = json.load(open(cfg_path)); pasta = os.path.dirname(os.path.abspath(cfg_path))
@@ -264,4 +286,4 @@ def publicar(cfg_path):
 
 if __name__ == "__main__":
     cmd, *args = sys.argv[1:]
-    {"clipes": clipes, "baixar": baixar, "estender": estender, "quadros": quadros, "transcrever": transcrever, "montar": montar, "publicar": publicar}[cmd](*args)
+    {"clipes": clipes, "baixar": baixar, "estender": estender, "quadros": quadros, "quadro": quadro, "transcrever": transcrever, "montar": montar, "publicar": publicar}[cmd](*args)
