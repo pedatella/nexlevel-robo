@@ -108,5 +108,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           T=$(head -1 resumo.md | sed 's/^# //')
-          { cat resumo.md; echo; echo "🎬 Vídeo e prévia: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > aviso.md
-          gh issue create --title "$T" --body-file aviso.md
+          { echo "@pedatella o vídeo já está nos rascunhos do seu TikTok. Legenda para colar:"; echo; cat resumo.md; echo; echo "🎬 Vídeo e prévia: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > aviso.md
+          gh issue create --title "$T" --body-file aviso.md --assignee pedatella
