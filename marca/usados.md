@@ -43,3 +43,7 @@
 | 662230674 | kosky | publi/animação, sem jogo |
 | 1839382586 | yuuri22 | conversa, fundo de cassino |
 | 3321181877 | yuuri22 | conversa, fundo de cassino |
+| 2668782993 | facada | cena sexual (set de filmagem) do GTA VI |
+| 1095133582 | facada | cena sexual (clube) do GTA VI |
+| 1022463188 | snopey | legenda queimada na imagem, sem pico |
+| 1780395931 | bistecone | legenda queimada, sem pico |
