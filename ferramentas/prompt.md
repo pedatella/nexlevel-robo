@@ -12,7 +12,10 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
 
 ## Passo a passo
 1. A pasta do corte é `cortes/corte-NNN` (caminho absoluto: `$GITHUB_WORKSPACE/cortes/corte-NNN`). NNN é o maior número de corte da tabela de `marca/usados.md` + 1, com 3 dígitos.
-2. Liste clipes: `python3 corte.py clipes <canal> 7` para cada criador liberado (para a Kick, `kick:coringa`). Se a semana estiver fraca, use 30 dias. Se uma plataforma falhar, siga com as outras. Escolha candidatos com muitas views e potencial de engajamento. Prioridade: momentos de JOGO, de QUALQUER jogo (a marca é de cortes de games; GTA VI está em alta e rende mais agora, mas não é exclusivo). O que vale: susto ou terror, jogada absurda, rage, bug engraçado, humor durante a gameplay. Reveze entre os criadores e os jogos. Clipe só de conversa, sem jogo, apenas se for muito engraçado e não houver nada de jogo que preste.
+2. Junte candidatos de DUAS fontes (pedido do Lucas: material antigo que ainda pode viralizar também vale):
+   A) CLIPES: `python3 corte.py clipes <canal> 7` para cada criador liberado (Kick: `kick:coringa`). Semana fraca? Use `30` e depois `tudo` (os mais vistos de todos os tempos). Conteúdo antigo vale se a graça não depende de notícia da semana.
+   B) LIVES GRAVADAS (Twitch): `python3 corte.py live <canal> 8` acha os momentos mais agitados (gritos, risadas) da última live gravada, só nos trechos de JOGO, e diz o jogo. Para os melhores, `python3 corte.py trecho <pasta> <video_id> <ini> <fim>` (use o trecho sugerido) baixa o pedaço como se fosse um clipe. Daí em diante é igual a um clipe: grade, transcrição, escolher 45 a 90 s da MESMA cena. As lives dão momentos longos e completos: use bastante, principalmente quando os clipes estiverem fracos ou curtos.
+   Se uma fonte ou plataforma falhar, siga com as outras. Prioridade: momentos de JOGO, de QUALQUER jogo (GTA VI está em alta, mas não é exclusivo): susto ou terror, jogada absurda, rage, bug engraçado, humor durante a gameplay. Reveze criadores e jogos.
 3. `python3 corte.py baixar <pasta> <canal> <slug> ...` com 3 a 6 candidatos. OLHE cada `brutos/<id>_grade.jpg` com a ferramenta Read. DESCARTE e mova para `brutos/descartados/` todo clipe com:
    - nudez ou cena sexual (até de jogo, como as do GTA VI) ou conteúdo sexual explícito na fala;
    - violência real;
@@ -59,7 +62,7 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
    5. Confira com `quadros` e `quadro` de novo: nenhum quadro pode mostrar a parte imprópria sem borrão, e o resto do jogo continua nítido. Se não der para cobrir direito, use uma caixa maior. Liste no resumo os trechos borrados.
    Se algo estiver errado, ajuste o corte.json e monte de novo. Se não der para ficar bom, troque de clipe. Pergunte-se: "eu assistiria isso até o fim?" Se não, não envie.
 8. `python3 corte.py publicar <pasta>/corte.json`. Ele envia o vídeo como rascunho para a caixa de entrada do TikTok do Lucas; ele publica pelo app colando a legenda.
-9. Acrescente a linha do corte na primeira tabela de `marca/usados.md` (mesmo formato). Clipes que você descartou por conteúdo proibido vão na tabela "Clipes descartados".
+9. Acrescente a linha do corte na primeira tabela de `marca/usados.md` (mesmo formato; trecho de live entra como `<video_id>@<ini>`). Clipes que você descartou por conteúdo proibido vão na tabela "Clipes descartados".
 10. Escreva o resumo final em `resumo.md` na raiz do repositório e repita como seu último texto. Formato:
    - primeira linha: `# corte-NNN · <criador> · <título>`;
    - duração e status do envio ao TikTok;

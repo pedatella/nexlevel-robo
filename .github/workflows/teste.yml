@@ -17,33 +17,9 @@ jobs:
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-liberation > /dev/null
           pip install -q -r requirements.txt
           fc-list | grep -i "liberation sans" | head -1
-      - name: TikTok (só lê a conta)
-        env:
-          TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
-          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
-          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
-        run: cd ferramentas && python3 tiktok_envio.py testar
-      - name: Twitch e Kick
+      - name: Lives gravadas (picos de jogo)
         run: |
           cd ferramentas
-          python3 corte.py clipes alanzoka 7 | head -3
-          python3 corte.py clipes kick:coringa 7 | head -3
-          S=$(python3 corte.py clipes kick:coringa 7 | head -1 | awk -F' [|] ' '{print $4}')
-          python3 corte.py baixar /tmp/t kick:coringa "$S"
-          ls -la /tmp/t/brutos
-      - name: Montagem de teste (fonte e layout)
-        run: |
-          cd ferramentas
-          python3 - <<'PY'
-          import json, os
-          b = "/tmp/t/brutos"; arq = [f for f in os.listdir(b) if f.endswith(".mp4")][0]
-          json.dump({arq: [[0.5, 1.2, "TESTE"], [1.3, 2.0, "DE"], [2.1, 3.0, "LEGENDA"]]}, open(f"{b}/palavras.json", "w"))
-          json.dump({"titulo": ["TESTE DO ROBÔ", "NA NUVEM"], "criador": "coringa", "link": "kick.com/coringa", "cam": None,
-                     "jogo": [0, 0, 1920, 1080], "trechos": [{"arquivo": arq, "ini": 0, "fim": 8}], "legenda": "teste"},
-                    open("/tmp/t/corte.json", "w"))
-          PY
-          python3 corte.py montar /tmp/t/corte.json
-      - uses: actions/upload-artifact@v4
-        with:
-          name: teste
-          path: /tmp/t/qa.jpg
+          python3 corte.py live paulinholokobr 6
+          V=$(python3 corte.py live paulinholokobr 1 2>/dev/null | true)
+          git -C .. checkout -- marca 2>/dev/null || true

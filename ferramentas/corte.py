@@ -2,9 +2,11 @@
 """Ferramenta de cortes da NexLevel (@nexlevel31), rodando no GitHub Actions. Uso (da raiz do repositório):
 
   PY=python3; cd ferramentas
-  $PY corte.py clipes <canal> [dias]                 lista os clipes mais vistos (views, duração, título, slug)
+  $PY corte.py clipes <canal> [1|7|30|tudo]                 lista os clipes mais vistos (views, duração, título, slug)
   $PY corte.py baixar <pasta> <canal> <slug> [...]   baixa clipes, gera grade de quadros (<id>_grade.jpg) e quadro.png
   $PY corte.py estender <pasta> <slug_twitch> [antes] [depois]  baixa o trecho da live em volta do clipe (mais contexto, mesma cena)
+  $PY corte.py live <canal_twitch> [n]               acha os n momentos mais agitados da última live gravada (pelo áudio)
+  $PY corte.py trecho <pasta> <video_id> <ini> <fim>  baixa esse pedaço da live como se fosse um clipe
   $PY corte.py transcrever <pasta>                   transcreve todos os .mp4 da pasta/brutos (palavras.json)
   $PY corte.py montar <pasta>/corte.json             monta o vídeo 1080x1920 (título, câmera, jogo, legendas, crédito, selo)
   (canal da Twitch sem prefixo; Kick com prefixo: kick:coringa)
@@ -51,7 +53,7 @@ def clipes(canal, dias="7"):
         for e in es[:40]:
             print(e.get("view_count"), e.get("duration"), e.get("title"), e.get("id"), sep=" | ")
         return
-    rng = {"1": "24hr", "7": "7d", "30": "30d"}.get(str(dias), "7d")
+    rng = {"1": "24hr", "7": "7d", "30": "30d", "tudo": "all"}.get(str(dias), "7d")
     out = subprocess.run(["yt-dlp", "--flat-playlist", "-J", f"https://www.twitch.tv/{canal}/clips?filter=clips&range={rng}"],
                          capture_output=True, text=True).stdout
     for e in (json.loads(out).get("entries") or [])[:40]:
@@ -97,6 +99,73 @@ def estender(pasta, slug, antes="45", depois="45"):
     subprocess.run([FF, "-v", "error", "-y", "-i", f, "-vf", "fps=1/6,scale=480:-1,tile=6x4", "-frames:v", "1", f"{b}/{nome}_grade.jpg"])
     subprocess.run([FF, "-v", "error", "-y", "-ss", "3", "-i", f, "-frames:v", "1", "-vf", "scale=1920:1080,setsar=1", f"{b}/{nome}_quadro.png"])
     print(nome, f"{fim - ini}s da live", f"(o clipe original fica de {int(c['vod_offset']) - ini}s a {int(c['vod_offset'] + dur) - ini}s deste arquivo)", sep=" | ")
+
+
+def _info(url):
+    r = subprocess.run(["yt-dlp", "--skip-download", "-J", url], capture_output=True, text=True)
+    return json.loads(r.stdout) if r.stdout.strip() else {}
+
+
+def live(canal, n="8", horas=""):
+    """Acha os melhores momentos da LIVE GRAVADA mais recente do canal da Twitch pelo áudio (gritos, risadas, agito).
+    Baixa só o áudio, mede o volume a cada segundo e devolve os n picos (pelo menos 4 min de distância um do outro).
+    Pula lives já varridas (marca/lives_usadas.txt). Depois use `trecho` para baixar o vídeo em volta de cada pico."""
+    import numpy as np, tempfile
+    usadas_f = f"{MARCA}/lives_usadas.txt"
+    usadas = set(open(usadas_f).read().split()) if os.path.exists(usadas_f) else set()
+    out = subprocess.run(["yt-dlp", "--flat-playlist", "-I", "1:6", "-J", f"https://www.twitch.tv/{canal}/videos?filter=archives&sort=time"],
+                         capture_output=True, text=True).stdout
+    vods = [e for e in (json.loads(out).get("entries") or []) if e["id"].lstrip("v") not in usadas] if out.strip() else []
+    if not vods:
+        print("SEM LIVE: nenhuma live gravada nova desse canal (ou só para inscritos)."); return
+    v = vods[0]; vid = v["id"].lstrip("v")
+    tmp = tempfile.mkdtemp()
+    sec = ["--download-sections", f"*0-{int(float(horas) * 3600)}"] if horas else []
+    subprocess.run(["yt-dlp", "-q", "-f", "Audio_Only/bestaudio", *sec, "-o", f"{tmp}/a.%(ext)s", f"https://www.twitch.tv/videos/{vid}"], check=False)
+    arq = glob.glob(f"{tmp}/a.*")
+    if not arq:
+        print("SEM LIVE: não consegui baixar o áudio dessa live."); return
+    raw = subprocess.run([FF, "-v", "error", "-i", arq[0], "-f", "s16le", "-ac", "1", "-ar", "2000", "-"], capture_output=True).stdout
+    for f in arq: os.remove(f)
+    a = np.frombuffer(raw, np.int16).astype(np.float32)
+    seg = len(a) // 2000
+    rms = np.sqrt((a[:seg * 2000].reshape(seg, 2000) ** 2).mean(1) + 1)
+    db = 20 * np.log10(rms)
+    base = np.convolve(db, np.ones(300) / 300, "same")            # nível normal dos últimos ~5 min
+    agito = np.convolve(db - base, np.ones(8) / 8, "same")         # 8 s acima do normal = momento agitado
+    agito[:600] = -99; agito[-300:] = -99                          # ignora começo e fim da live
+    caps = _info(f"https://www.twitch.tv/videos/{vid}").get("chapters") or []
+    def jogo_em(t):
+        for c in caps:
+            if c["start_time"] <= t < c["end_time"]: return c["title"]
+        return "?"
+    NAO_JOGO = ("just chatting", "conversando", "irl", "music", "talk shows", "sports", "watch party", "art", "special events")
+    for c in caps:                                                   # só momentos de JOGO
+        if c["title"].lower() in NAO_JOGO:
+            agito[int(c["start_time"]):int(c["end_time"])] = -99
+    picos = []
+    for i in np.argsort(-agito):
+        if len(picos) >= int(n): break
+        if all(abs(i - p) > 240 for p in picos): picos.append(int(i))
+    with open(usadas_f, "a") as fh: fh.write(vid + "\n")
+    print(f"live {vid} ({seg // 60} min): {v.get('title', '')} | jogos: {', '.join(c['title'] for c in caps) or '?'}")
+    for p in sorted(picos):
+        if agito[p] < 3: continue
+        print(f"pico em {p // 3600}h{p % 3600 // 60:02d}m{p % 60:02d}s ({p} s) | {jogo_em(p)} | força {agito[p]:.1f} dB | trecho sugerido: {vid} {p - 70} {p + 40}")
+
+
+def trecho(pasta, video_id, ini, fim):
+    """Baixa um pedaço da live gravada (segundos ini a fim) para brutos/, com grade e quadro, como um clipe."""
+    b = f"{pasta}/brutos"; os.makedirs(b, exist_ok=True)
+    ini, fim = max(0, int(float(ini))), int(float(fim)); nome = f"{video_id}_{ini}"
+    subprocess.run(["yt-dlp", "-q", "-f", "best[height<=1080]/best", "--download-sections", f"*{ini}-{fim}", "--remux-video", "mp4",
+                    "-o", f"{b}/{nome}.%(ext)s", f"https://www.twitch.tv/videos/{video_id}"], check=False)
+    f = f"{b}/{nome}.mp4"
+    if not os.path.exists(f):
+        print("FALHOU o download desse trecho."); return
+    subprocess.run([FF, "-v", "error", "-y", "-i", f, "-vf", "fps=1/5,scale=480:-1,tile=6x4", "-frames:v", "1", f"{b}/{nome}_grade.jpg"])
+    subprocess.run([FF, "-v", "error", "-y", "-ss", "3", "-i", f, "-frames:v", "1", "-vf", "scale=1920:1080,setsar=1", f"{b}/{nome}_quadro.png"])
+    print(nome, f"{fim - ini}s", sep=" | ")
 
 
 def transcrever(pasta):
@@ -286,4 +355,4 @@ def publicar(cfg_path):
 
 if __name__ == "__main__":
     cmd, *args = sys.argv[1:]
-    {"clipes": clipes, "baixar": baixar, "estender": estender, "quadros": quadros, "quadro": quadro, "transcrever": transcrever, "montar": montar, "publicar": publicar}[cmd](*args)
+    {"clipes": clipes, "baixar": baixar, "estender": estender, "quadros": quadros, "quadro": quadro, "live": live, "trecho": trecho, "transcrever": transcrever, "montar": montar, "publicar": publicar}[cmd](*args)
