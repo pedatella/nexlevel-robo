@@ -110,3 +110,15 @@ jobs:
           T=$(head -1 resumo.md | sed 's/^# //')
           { echo "@pedatella o vídeo já está nos rascunhos do seu TikTok. Legenda para colar:"; echo; cat resumo.md; echo; echo "🎬 Vídeo e prévia: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > aviso.md
           gh issue create --title "$T" --body-file aviso.md --assignee pedatella
+
+      - name: Avisar no WhatsApp (CallMeBot)
+        if: always()
+        env:
+          WA_FONE: ${{ secrets.WHATSAPP_PHONE }}
+          WA_CHAVE: ${{ secrets.WHATSAPP_APIKEY }}
+        run: |
+          [ -n "$WA_FONE" ] && [ -n "$WA_CHAVE" ] || { echo "WhatsApp não configurado"; exit 0; }
+          { head -1 resumo.md | sed 's/^# /🎬 NexLevel: /'; echo; echo "Já está nos rascunhos do seu TikTok. Legenda:"; echo; sed -n '/^```/,/^```/p' resumo.md | grep -v '^```'; } > wa.txt
+          grep -q "FALHOU" wa.txt && { head -3 resumo.md | sed 's/^# /⚠️ NexLevel /' > wa.txt; }
+          curl -s -G "https://api.callmebot.com/whatsapp.php" --data-urlencode "phone=$WA_FONE" \
+            --data-urlencode "text@wa.txt" --data-urlencode "apikey=$WA_CHAVE" -o /dev/null -w "WhatsApp HTTP %{http_code}\n" || true
