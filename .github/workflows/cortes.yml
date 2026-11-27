@@ -46,6 +46,8 @@ jobs:
           TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
           TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
+          TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
         run: |
           mkdir -p cortes
           # até 3 tentativas; nunca repete depois que um vídeo já foi enviado ao TikTok (legenda.txt existe)

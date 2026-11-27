@@ -4,6 +4,7 @@
   PY=python3; cd ferramentas
   $PY corte.py clipes <canal> [dias]                 lista os clipes mais vistos (views, duração, título, slug)
   $PY corte.py baixar <pasta> <canal> <slug> [...]   baixa clipes, gera grade de quadros (<id>_grade.jpg) e quadro.png
+  $PY corte.py estender <pasta> <slug_twitch> [antes] [depois]  baixa o trecho da live em volta do clipe (mais contexto, mesma cena)
   $PY corte.py transcrever <pasta>                   transcreve todos os .mp4 da pasta/brutos (palavras.json)
   $PY corte.py montar <pasta>/corte.json             monta o vídeo 1080x1920 (título, câmera, jogo, legendas, crédito, selo)
   (canal da Twitch sem prefixo; Kick com prefixo: kick:coringa)
@@ -65,6 +66,34 @@ def baixar(pasta, canal, *slugs):
         subprocess.run([FF, "-v", "error", "-y", "-i", f, "-vf", "fps=1/5,scale=480:-1,tile=4x3", "-frames:v", "1", f"{b}/{d['id']}_grade.jpg"])
         subprocess.run([FF, "-v", "error", "-y", "-ss", "3", "-i", f, "-frames:v", "1", "-vf", "scale=1920:1080,setsar=1", f"{b}/{d['id']}_quadro.png"])
         print(d["id"], d.get("duration"), d.get("title"), d.get("categories"), sep=" | ")
+
+
+def estender(pasta, slug, antes="45", depois="45"):
+    """Clipe da Twitch -> baixa o trecho da LIVE (VOD) em volta dele: `antes` s antes e `depois` s depois do clipe.
+    Usa a API oficial da Twitch (Helix) com o app do Lucas (segredos TWITCH_CLIENT_ID e TWITCH_CLIENT_SECRET)."""
+    import requests
+    cid, sec = os.environ.get("TWITCH_CLIENT_ID"), os.environ.get("TWITCH_CLIENT_SECRET")
+    if not cid or not sec:
+        print("SEM VOD: app da Twitch não configurado. Use o clipe normal."); return
+    tk = requests.post("https://id.twitch.tv/oauth2/token", timeout=30,
+                       data={"client_id": cid, "client_secret": sec, "grant_type": "client_credentials"}).json().get("access_token")
+    r = requests.get("https://api.twitch.tv/helix/clips", params={"id": slug}, timeout=30,
+                     headers={"Client-Id": cid, "Authorization": f"Bearer {tk}"}).json()
+    c = (r.get("data") or [{}])[0]
+    if not c.get("video_id") or c.get("vod_offset") is None:
+        print("SEM VOD: a live desse clipe não está disponível (apagada ou só para inscritos). Use o clipe normal."); return
+    dur = float(c.get("duration") or 30)
+    ini = max(0, int(c["vod_offset"]) - int(antes)); fim = int(c["vod_offset"] + dur) + int(depois)
+    b = f"{pasta}/brutos"; os.makedirs(b, exist_ok=True)
+    nome = f"{c['video_id']}_{ini}"
+    subprocess.run(["yt-dlp", "-q", "-f", "best[height<=1080]/best", "--download-sections", f"*{ini}-{fim}", "--remux-video", "mp4",
+                    "-o", f"{b}/{nome}.%(ext)s", f"https://www.twitch.tv/videos/{c['video_id']}"], check=False)
+    f = f"{b}/{nome}.mp4"
+    if not os.path.exists(f):
+        print("FALHOU o download do trecho da live. Use o clipe normal."); return
+    subprocess.run([FF, "-v", "error", "-y", "-i", f, "-vf", "fps=1/6,scale=480:-1,tile=6x4", "-frames:v", "1", f"{b}/{nome}_grade.jpg"])
+    subprocess.run([FF, "-v", "error", "-y", "-ss", "3", "-i", f, "-frames:v", "1", "-vf", "scale=1920:1080,setsar=1", f"{b}/{nome}_quadro.png"])
+    print(nome, f"{fim - ini}s da live", f"(o clipe original fica de {int(c['vod_offset']) - ini}s a {int(c['vod_offset'] + dur) - ini}s deste arquivo)", sep=" | ")
 
 
 def transcrever(pasta):
@@ -213,4 +242,4 @@ def publicar(cfg_path):
 
 if __name__ == "__main__":
     cmd, *args = sys.argv[1:]
-    {"clipes": clipes, "baixar": baixar, "transcrever": transcrever, "montar": montar, "publicar": publicar}[cmd](*args)
+    {"clipes": clipes, "baixar": baixar, "estender": estender, "transcrever": transcrever, "montar": montar, "publicar": publicar}[cmd](*args)
