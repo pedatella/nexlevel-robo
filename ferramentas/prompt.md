@@ -5,14 +5,14 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
 ## Arquivos (leia antes de tudo)
 - Perfil da marca (DNA): `marca/dna.json`. Leia inteiro: tom zoeira gamer, ganchos, estrutura, duração (um clipe só, de preferência 45 a 90 s), legendas, crédito, proibições, restrições e formato da legenda da publicação.
 - Regras do vídeo: `marca/REGRAS.md`
-- Criadores liberados: `marca/autorizacoes/`. Só produza de quem tem arquivo "LIBERADO": hoje alanzoka, coringa, bistecone e kosky. Cellbit está BLOQUEADO. The Darkness e Davy Jones estão pendentes: NUNCA use.
+- Criadores liberados: `marca/autorizacoes/`. Só produza de quem tem arquivo "LIBERADO": hoje alanzoka, coringa, bistecone, kosky, paulinholoko, piuzinho, yuuri22 e dona. Cellbit está BLOQUEADO. The Darkness e Davy Jones estão pendentes: NUNCA use.
 - Canais (Twitch e Kick): `marca/canais.md`
 - Clipes já usados: `marca/usados.md`. Nunca repita um id. Reveze os criadores: não use o mesmo do último corte, se houver alternativa boa.
 - Ferramenta: `ferramentas/corte.py`. Leia o cabeçalho; ele explica os comandos e o corte.json. Rode sempre de dentro de `ferramentas/` com `python3 corte.py ...`.
 
 ## Passo a passo
 1. A pasta do corte é `cortes/corte-NNN` (caminho absoluto: `$GITHUB_WORKSPACE/cortes/corte-NNN`). NNN é o maior número de corte da tabela de `marca/usados.md` + 1, com 3 dígitos.
-2. Liste clipes: `python3 corte.py clipes <canal> 7` para cada criador liberado (para a Kick, `kick:coringa`). Se a semana estiver fraca, use 30 dias. Se uma plataforma falhar, siga com as outras. Escolha candidatos com muitas views e potencial de engajamento. Prioridade: momentos de JOGO (a marca é de cortes de games): susto ou terror, jogada absurda, rage, bug engraçado, humor durante a gameplay. Clipe só de conversa, sem jogo, apenas se for muito engraçado e não houver nada de jogo que preste.
+2. Liste clipes: `python3 corte.py clipes <canal> 7` para cada criador liberado (para a Kick, `kick:coringa`). Se a semana estiver fraca, use 30 dias. Se uma plataforma falhar, siga com as outras. Escolha candidatos com muitas views e potencial de engajamento. Prioridade: momentos de JOGO, de QUALQUER jogo (a marca é de cortes de games; GTA VI está em alta e rende mais agora, mas não é exclusivo). O que vale: susto ou terror, jogada absurda, rage, bug engraçado, humor durante a gameplay. Reveze entre os criadores e os jogos. Clipe só de conversa, sem jogo, apenas se for muito engraçado e não houver nada de jogo que preste.
 3. `python3 corte.py baixar <pasta> <canal> <slug> ...` com 3 a 6 candidatos. OLHE cada `brutos/<id>_grade.jpg` com a ferramenta Read. DESCARTE e mova para `brutos/descartados/` todo clipe com:
    - nudez ou cena sexual (até de jogo, como as do GTA VI) ou conteúdo sexual explícito na fala;
    - violência real;
