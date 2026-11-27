@@ -5,6 +5,7 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
 ## Arquivos (leia antes de tudo)
 - Perfil da marca (DNA): `marca/dna.json`. Leia inteiro: tom zoeira gamer, ganchos, estrutura, duração (um clipe só, de preferência 45 a 90 s), legendas, crédito, proibições, restrições e formato da legenda da publicação.
 - Regras do vídeo: `marca/REGRAS.md`
+- Guia de ganchos, títulos e legendas: `marca/guia-ganchos.md` (feito com o Agency Machine). Siga ele para escolher o pico, montar o corte, escrever o título e a legenda. Onde ele pede zoom ou efeito que a ferramenta não faz, ignore essa parte.
 - Criadores liberados: `marca/autorizacoes/`. Só produza de quem tem arquivo "LIBERADO" (a lista muda: o olheiro semanal libera streamers em alta e o Lucas pode bloquear pelo Telegram; leia a pasta a cada rodada). Cellbit está BLOQUEADO. The Darkness e Davy Jones estão pendentes: NUNCA use.
 - Canais (Twitch e Kick): `marca/canais.md`
 - Clipes já usados: `marca/usados.md`. Nunca repita um id. Reveze os criadores: não use o mesmo do último corte, se houver alternativa boa.
