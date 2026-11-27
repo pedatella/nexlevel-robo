@@ -8,6 +8,7 @@
 | 2026-11-27 | corte-006 | alanzoka | 3011843597 | TRÂNSITO CAÓTICO NO GTA 6 |
 | 2026-11-27 | corte-007 | bistecone | 797269546 | ERA TUDO UMA ARMADILHA NO GTA 6 |
 | 2026-11-27 | corte-008 | paulinholoko (saiu creditado ERRADO como alanzoka; não postar) | 1724961707 | TENTOU FUGIR DE QUADRICICLO E ACABOU NO HIDROAVIÃO |
+| 2026-11-27 | corte-009 | bistecone | 2935089814@9855 | ELE SÓ QUERIA DESPISTAR A POLÍCIA NO GTA 6 |
 
 ## Clipes descartados (nunca usar)
 | clipe | criador | motivo |
@@ -47,3 +48,12 @@
 | 1095133582 | facada | cena sexual (clube) do GTA VI |
 | 1022463188 | snopey | legenda queimada na imagem, sem pico |
 | 1780395931 | bistecone | legenda queimada, sem pico |
+| 803872657 | paulinholoko | gameplay calmo, sem pico |
+| 3316606785 | facada | nudez/cena sexual do GTA VI |
+| 3608645286 | yuuri22 | cassino/bet |
+| clip_01M7V46MBHX3AGRXAKEDT2XC4A | coringa (kick) | seminudez/cena sexual do GTA VI |
+| clip_01M7V48HW62RWAZHAMYJFTVHY9 | coringa (kick) | clube de strip/nudez do GTA VI |
+| 2391971253 | yuuri22 | cassino/bet |
+| 446255816 | yuuri22 | sem jogo, sem pico |
+| 460537150 | kosky | conversa, sem jogo |
+| 862376192 | kosky | conversa, sem jogo |
