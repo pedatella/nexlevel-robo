@@ -81,6 +81,7 @@ jobs:
           path: |
             cortes/*/*.mp4
             cortes/*/qa.jpg
+            cortes/*/tira.jpg
             cortes/*/legenda.txt
           if-no-files-found: ignore
           retention-days: 30

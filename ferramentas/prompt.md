@@ -12,7 +12,7 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
 
 ## Passo a passo
 1. A pasta do corte é `cortes/corte-NNN` (caminho absoluto: `$GITHUB_WORKSPACE/cortes/corte-NNN`). NNN é o maior número de corte da tabela de `marca/usados.md` + 1, com 3 dígitos.
-2. Liste clipes: `python3 corte.py clipes <canal> 7` para cada criador liberado (para a Kick, `kick:coringa`). Se a semana estiver fraca, use 30 dias. Se uma plataforma falhar, siga com as outras. Escolha candidatos com muitas views e potencial de engajamento. Prioridade: susto ou terror, humor, rage, jogada absurda, interação com o chat.
+2. Liste clipes: `python3 corte.py clipes <canal> 7` para cada criador liberado (para a Kick, `kick:coringa`). Se a semana estiver fraca, use 30 dias. Se uma plataforma falhar, siga com as outras. Escolha candidatos com muitas views e potencial de engajamento. Prioridade: momentos de JOGO (a marca é de cortes de games): susto ou terror, jogada absurda, rage, bug engraçado, humor durante a gameplay. Clipe só de conversa, sem jogo, apenas se for muito engraçado e não houver nada de jogo que preste.
 3. `python3 corte.py baixar <pasta> <canal> <slug> ...` com 3 a 6 candidatos. OLHE cada `brutos/<id>_grade.jpg` com a ferramenta Read. DESCARTE e mova para `brutos/descartados/` todo clipe com:
    - nudez ou cena sexual (até de jogo, como as do GTA VI) ou conteúdo sexual explícito na fala;
    - violência real;
@@ -29,7 +29,7 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
    - Tire tempo morto: mais de 4 s sem fala e sem nada acontecendo na tela sai (corte com `ini`/`fim` dentro do mesmo clipe).
    - Clipe com legenda já queimada na imagem pelo editor da Twitch ou Kick: prefira outro.
    - Título em 2 linhas, em caixa alta, curto (até cerca de 24 caracteres por linha), SEM emoji, dizendo o que REALMENTE aparece no corte (quem vê o título tem de ver aquilo acontecer). Não invente contexto.
-5. Ache a câmera do streamer: abra `brutos/<id>_quadro.png` (sempre 1920x1080) com Read e meça a caixa da câmera com cuidado: só a imagem da webcam, sem borda, barra de sub, doação ou alerta. O rosto tem de ficar no meio da caixa. Se não houver câmera, use `"cam": null` (o jogo sai inteiro, sem cortar). Para o `jogo`, dê uma caixa centrada onde a ação acontece (personagem, carro, mira). A ferramenta usa a altura toda e ajusta a largura sozinha, sem esticar.
+5. Ache a câmera do streamer: abra `brutos/<id>_quadro.png` (sempre 1920x1080) com Read e meça a caixa da câmera com cuidado: só a imagem da webcam, sem borda, barra de sub, doação ou alerta. O rosto tem de ficar no meio da caixa. Se não houver câmera, OU se o clipe for só conversa com a câmera (sem jogo na tela), use `"cam": null`: a imagem sai inteira uma vez só, sem cortar (nunca mostre o mesmo rosto duas vezes). Para o `jogo`, dê uma caixa centrada onde a ação acontece (personagem, carro, mira). A ferramenta usa a altura toda e ajusta a largura sozinha, sem esticar.
 6. Escreva `<pasta>/corte.json`:
    - campos titulo, criador, link (o da plataforma de onde veio o clipe), cam, jogo e trechos;
    - legenda no formato do DNA: linha 1 em zoeira gamer com 1 a 2 emojis; linha 2 "Corte da live de <criador> · <link> @<criador>"; linha 3 uma pergunta para os comentários; depois exatamente 5 hashtags.
