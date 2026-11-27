@@ -7,4 +7,6 @@
 - piuzinho → twitch.tv/piuzinho (poucos clipes por semana: use 30 dias)
 - yuuri22 → twitch.tv/yuuri22
 - dona → twitch.tv/dona (clipes com muitas views)
+- snopey → twitch.tv/snopey (olheiro: Grand Theft Auto VI)
+- facada → twitch.tv/facada (olheiro: Grand Theft Auto VI)
 Bloqueado: cellbit. Pendentes: thedarkness, davyjones (ver autorizacoes/).
