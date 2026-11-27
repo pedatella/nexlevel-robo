@@ -166,3 +166,5 @@ jobs:
           fi
           curl -s "https://api.telegram.org/bot$TG_TOKEN/sendMessage" --data-urlencode "chat_id=$TG_CHAT" \
             --data-urlencode "text@tg.txt" -d disable_web_page_preview=true -o /dev/null -w "Telegram HTTP %{http_code}\n" || true
+          # o próprio vídeo também vai no Telegram: se o TikTok esconder o rascunho, é só salvar e postar
+          bash ferramentas/telegram_video.sh cortes/*/corte-*.mp4 || true

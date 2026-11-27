@@ -1,0 +1,36 @@
+name: Reenviar corte no Telegram
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Número da execução do corte"
+        required: true
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  reenviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Baixar o vídeo daquela execução
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download "${{ inputs.run_id }}" -R "$GITHUB_REPOSITORY" -n corte -D corte
+      - name: Mandar no Telegram
+        env:
+          TG_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          sudo apt-get install -y -qq ffmpeg > /dev/null 2>&1 || true
+          V=$(ls corte/*/corte-*.mp4 corte/corte-*.mp4 2>/dev/null | head -1); echo "vídeo: $V"
+          L=$(ls corte/*/legenda.txt corte/legenda.txt 2>/dev/null | head -1)
+          [ -n "$L" ] && curl -s "https://api.telegram.org/bot$TG_TOKEN/sendMessage" --data-urlencode "chat_id=$TG_CHAT" \
+            --data-urlencode "text=Legenda para colar:
+
+$(cat "$L")" -o /dev/null -w "Telegram HTTP %{http_code}\n"
+          bash ferramentas/telegram_video.sh "$V"
