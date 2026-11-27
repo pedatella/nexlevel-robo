@@ -8,7 +8,8 @@
 | 2026-11-27 | corte-006 | alanzoka | 3011843597 | TRÂNSITO CAÓTICO NO GTA 6 |
 | 2026-11-27 | corte-007 | bistecone | 797269546 | ERA TUDO UMA ARMADILHA NO GTA 6 |
 | 2026-11-27 | corte-008 | paulinholoko (saiu creditado ERRADO como alanzoka; não postar) | 1724961707 | TENTOU FUGIR DE QUADRICICLO E ACABOU NO HIDROAVIÃO |
-| 2026-11-27 | corte-009 | bistecone | 2935089814@9855 | ELE SÓ QUERIA DESPISTAR A POLÍCIA NO GTA 6 |
+| 2026-11-27 | corte-009 | bistecone (SAIU SEM SOM: trecho de VOD silenciado pela Twitch; não postar) | 2935089814@9855 | ELE SÓ QUERIA DESPISTAR A POLÍCIA NO GTA 6 |
+| 2026-11-27 | corte-010 | paulinholoko (TikTok recusou: fila cheia; vídeo mandado pelo Telegram) | 296295234 | NINGUÉM AVISOU O PAULO DOS POLICIAIS NA CASA |
 
 ## Clipes descartados (nunca usar)
 | clipe | criador | motivo |
