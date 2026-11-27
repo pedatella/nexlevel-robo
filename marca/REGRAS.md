@@ -10,7 +10,7 @@ Fonte de verdade: `dna.json` desta pasta (workspace `nexlevel` no FLYD). Isto é
 ## Formato
 - 9:16, 1080x1920, UM CLIPE SÓ por vídeo (regra do Lucas, 27/11), de preferência 45 a 90 s; qualidade de gancho, título e enquadramento no nível do corte 001. Nunca juntar clipes.
 - Layout: câmera do streamer em cima, gameplay embaixo; sem câmera, gameplay em tela cheia.
-- Título fixo no topo, 2 linhas, caixa alta, com emoji (ex.: "ELE NÃO ESPERAVA ISSO 💀").
+- Título fixo no topo, 2 linhas, caixa alta, SEM emoji (como no corte 001; fórmulas em guia-ganchos.md). Emoji só na legenda da publicação.
 - Legendas: TODA a fala (acessibilidade), 2 a 4 palavras por vez, sincronizadas; tamanho médio legível, centro-baixo sem cobrir rosto nem jogo; branco com contorno preto, palavra-chave em #8B2CF5; sons relevantes entre colchetes ([GRITO], [SUSTO]).
 - Áudio: só o original do criador; efeitos sonoros leves nos picos (zoom, susto). Sem música, sem narração.
 - Edição: começa no pico, volta para o contexto; zoom de reação nos picos; cortes secos nas pausas longas.
