@@ -18,7 +18,7 @@ concurrency:
 jobs:
   corte:
     runs-on: ubuntu-latest
-    timeout-minutes: 80
+    timeout-minutes: 200
     steps:
       - uses: actions/checkout@v4
 
@@ -48,11 +48,29 @@ jobs:
           TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
         run: |
           mkdir -p cortes
-          claude -p "$(cat ferramentas/prompt.md)" \
-            --permission-mode acceptEdits \
-            --allowedTools "Bash" "Read" "Write" "Edit" "Glob" "Grep" \
-            > saida.txt 2> erro.txt || true
-          [ -s resumo.md ] || { echo "# FALHOU: o diretor não terminou"; echo; tail -c 3000 saida.txt; tail -c 2000 erro.txt; } > resumo.md
+          # até 3 tentativas; nunca repete depois que um vídeo já foi enviado ao TikTok (legenda.txt existe)
+          for tentativa in 1 2 3; do
+            timeout 50m claude -p "$(cat ferramentas/prompt.md)" \
+              --permission-mode acceptEdits \
+              --allowedTools "Bash" "Read" "Write" "Edit" "Glob" "Grep" \
+              > saida.txt 2> erro.txt || true
+            ls cortes/*/legenda.txt > /dev/null 2>&1 && break
+            [ -s resumo.md ] && ! grep -q "^# FALHOU" resumo.md && break
+            [ "$tentativa" = 3 ] && break
+            echo "tentativa $tentativa não enviou vídeo; nova tentativa em 5 min"
+            tail -c 1500 saida.txt; tail -c 1500 erro.txt
+            rm -rf cortes/* resumo.md
+            git checkout -- marca/usados.md 2>/dev/null || true
+            sleep 300
+          done
+          if [ ! -s resumo.md ]; then
+            L=$(ls cortes/*/legenda.txt 2>/dev/null | head -1)
+            if [ -n "$L" ]; then
+              { echo "# $(basename "$(dirname "$L")") · enviado ao TikTok (resumo automático)"; echo; echo '```'; cat "$L"; echo; echo '```'; } > resumo.md
+            else
+              { echo "# FALHOU: o diretor não terminou depois de 3 tentativas"; echo; echo '```'; tail -c 2500 saida.txt; tail -c 1500 erro.txt; echo '```'; } > resumo.md
+            fi
+          fi
           cat resumo.md
 
       - name: Vídeo para baixar
