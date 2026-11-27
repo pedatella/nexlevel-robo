@@ -99,7 +99,6 @@ jobs:
               > saida.txt 2> erro.txt || true
             ls cortes/*/legenda.txt > /dev/null 2>&1 && break
             [ -s resumo.md ] && ! grep -q "^# FALHOU" resumo.md && break
-            grep -qi "sem material" resumo.md 2>/dev/null && break   # falta de clipe bom: repetir não adianta
             [ "$tentativa" = 3 ] && break
             echo "tentativa $tentativa não enviou vídeo; nova tentativa em 5 min"
             tail -c 1500 saida.txt; tail -c 1500 erro.txt

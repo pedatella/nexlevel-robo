@@ -47,7 +47,13 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
    - Não corte no meio da frase nem da risada. Tire tempo morto (mais de 4 s sem fala e sem nada acontecendo).
    - Clipe com legenda já queimada na imagem pelo editor da Twitch ou Kick: prefira outro.
    - Título em 2 linhas, em caixa alta, curto (até cerca de 24 caracteres por linha), SEM emoji, dizendo o que REALMENTE aparece. Não invente contexto.
-   - Se não achar material para um corte nesse nível, escolha outro criador ou outros clipes. Se nada servir, pare com `# FALHOU: sem material bom` em vez de mandar um corte fraco.
+   - NUNCA DEIXE O HORÁRIO SEM VÍDEO (regra do Lucas, 27/11: "precisamos de tudo rodando 100%"). Material fraco NÃO é motivo para parar. Se os primeiros candidatos não servem, continue procurando nesta ordem, até achar:
+     1) `clipes <canal> 7` de TODOS os criadores liberados;
+     2) `clipes <canal> 30` e depois `clipes <canal> tudo` de todos (os mais vistos de todos os tempos quase sempre têm pico forte);
+     3) `live` de pelo menos 3 criadores diferentes.
+     Clipe com cena imprópria só em parte do tempo: BORRE (exceção acima) em vez de descartar. Legenda queimada na imagem: só "prefira outro", não proíbe.
+     Se depois de tudo isso nada tiver o pico ideal, mande o MELHOR candidato que encontrou (o mais engraçado ou agitado, sempre fora da lista de proibidos) e diga nos avisos do resumo que o material estava mais fraco.
+     `# FALHOU: sem material` só é permitido se TODAS as plataformas estiverem fora do ar ou TODO candidato cair na lista de proibidos.
 5. Ache a câmera do streamer: abra `brutos/<id>_quadro.png` (sempre 1920x1080) com Read e meça a caixa da câmera com cuidado: só a imagem da webcam, sem borda, barra de sub, doação ou alerta. O rosto tem de ficar no meio da caixa. Se não houver câmera, OU se o clipe for só conversa com a câmera (sem jogo na tela), use `"cam": null`: a imagem sai inteira uma vez só, sem cortar (nunca mostre o mesmo rosto duas vezes). Para o `jogo`, dê uma caixa centrada onde a ação acontece (personagem, carro, mira). A ferramenta usa a altura toda e ajusta a largura sozinha, sem esticar.
 6. Escreva `<pasta>/corte.json`:
    - campos titulo, criador, link, cam, jogo e trechos. CRÉDITO: o criador é o dono do canal de onde o arquivo foi baixado (está em `brutos/<arquivo>.canal.txt`), NUNCA o que você acha que é. Link = `twitch.tv/<canal>` ou `kick.com/<canal>`. Confira também pelo rosto na câmera. O `montar` recusa crédito errado (o corte 008 saiu com o PaulinhoLOKO creditado como Alanzoka: nunca mais);
@@ -82,4 +88,4 @@ Você roda sozinho no GitHub Actions (Linux), a partir da raiz deste repositóri
 - inventar fofoca ou contexto;
 - passar de 1 corte por execução.
 
-Se algo travar (plataformas fora, TikTok recusando, nenhum clipe aproveitável), escreva em `resumo.md` o motivo em 1 linha começando com `# FALHOU:` e pare, sem forçar.
+Se algo travar de verdade (plataformas fora, TikTok recusando), escreva em `resumo.md` o motivo em 1 linha começando com `# FALHOU:` e pare, sem forçar.
