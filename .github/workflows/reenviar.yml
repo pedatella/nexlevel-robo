@@ -26,7 +26,7 @@ jobs:
           TG_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          sudo apt-get install -y -qq ffmpeg > /dev/null 2>&1 || true
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
           V=$(ls corte/*/corte-*.mp4 corte/corte-*.mp4 2>/dev/null | head -1); echo "vídeo: $V"
           L=$(ls corte/*/legenda.txt corte/legenda.txt 2>/dev/null | head -1)
           if [ -n "$L" ]; then
