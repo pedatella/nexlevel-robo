@@ -13,6 +13,7 @@
 | 2026-11-28 | corte-011 | alanzoka | 286980397 | ELE JUROU ZERAR O GTA 6 SEM MATAR NINGUÉM |
 | 2026-11-28 | corte-012 | paulinholoko | 3683916580 | SAI DA RUA, RAPAZ O TRÂNSITO DO GTA 6 |
 | 2026-11-28 | corte-013 | bistecone | 3008606350 | ROUBARAM A ENCOMENDA DA LUCIA NO GTA 6 |
+| 2026-11-28 | corte-014 | alanzoka | 2942407120@15406 | A VENDA DA LUCIA DEU MUITO ERRADO NO GTA 6 |
 
 ## Clipes descartados (nunca usar)
 | clipe | criador | motivo |
@@ -66,3 +67,6 @@
 | 915388022 | facada | gameplay calmo, sem pico |
 | 1632271357 | alanzoka | só menu do Overwatch |
 | 2259898448 | paulinholoko | não usado: sem reação forte (reserva) |
+| 2891399062 | facada | clube de strip do GTA VI |
+| 2699587678 | snopey | vídeo sobre outro streamer chorando, sem jogo |
+| 866801065 | dona | conversa, sem jogo |
