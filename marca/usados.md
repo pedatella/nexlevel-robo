@@ -15,10 +15,17 @@
 | 2026-11-28 | corte-013 | bistecone | 3008606350 | ROUBARAM A ENCOMENDA DA LUCIA NO GTA 6 |
 | 2026-11-28 | corte-014 | alanzoka | 2942407120@15406 | A VENDA DA LUCIA DEU MUITO ERRADO NO GTA 6 |
 | 2026-11-28 | corte-015 | alanzoka | 220667357 | O ALANZOKA PERDEU A CALMA NESSA LUTA |
+| 2026-11-28 | corte-016 | bistecone | 409600665 | A VOADORA DO BISTECONE NA VILA DE ARTISTAS |
 
 ## Clipes descartados (nunca usar)
 | clipe | criador | motivo |
 |---|---|---|
+| 3334394303 | bistecone | fala ofensiva ("gordinha") e agressão a NPC |
+| 4161602460 | facada | fuga calma, sem pico |
+| 2902631987@1146 | paulinholoko | live parada, mostra desktop |
+| 2929043292@10012 | bistecone | sem pico, conversa de jogo |
+| 2086992591 | bistecone | conversa, sem jogo |
+| 4252953342 | paulinholoko | sem pico |
 | clip_01M7V8SCRC2ZP81Y679PV8X30N | coringa (kick) | cena sexual do GTA VI |
 | clip_01M806X20Q7E4KZVH9GZFF9EWN | coringa (kick) | lingerie / cena sexual do GTA VI |
 | clip_01M7Z6K0S1A1E8JPK8C2B59ZGK | coringa (kick) | cena sexual (set de filmagem) do GTA VI |
