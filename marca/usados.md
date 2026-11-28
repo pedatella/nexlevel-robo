@@ -11,6 +11,7 @@
 | 2026-11-27 | corte-009 | bistecone (SAIU SEM SOM: trecho de VOD silenciado pela Twitch; não postar) | 2935089814@9855 | ELE SÓ QUERIA DESPISTAR A POLÍCIA NO GTA 6 |
 | 2026-11-27 | corte-010 | paulinholoko (TikTok recusou: fila cheia; vídeo mandado pelo Telegram) | 296295234 | NINGUÉM AVISOU O PAULO DOS POLICIAIS NA CASA |
 | 2026-11-28 | corte-011 | alanzoka | 286980397 | ELE JUROU ZERAR O GTA 6 SEM MATAR NINGUÉM |
+| 2026-11-28 | corte-012 | paulinholoko | 3683916580 | SAI DA RUA, RAPAZ O TRÂNSITO DO GTA 6 |
 
 ## Clipes descartados (nunca usar)
 | clipe | criador | motivo |
@@ -63,3 +64,4 @@
 | 4201093579 | dona | já descartado (cassino/bet) |
 | 915388022 | facada | gameplay calmo, sem pico |
 | 1632271357 | alanzoka | só menu do Overwatch |
+| 2259898448 | paulinholoko | não usado: sem reação forte (reserva) |
