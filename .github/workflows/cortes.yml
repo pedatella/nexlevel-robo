@@ -13,6 +13,10 @@ on:
     - cron: "17 19 * * *"
     - cron: "47 22 * * *"
     - cron: "17 23 * * *"
+  # gatilho da rotina do Claude na nuvem (9h17, 15h17, 19h17): um commit em gatilho/ dispara o corte
+  push:
+    paths:
+      - "gatilho/**"
   workflow_dispatch:
     inputs:
       origem:
@@ -41,7 +45,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CRON: ${{ github.event.schedule }}
-          ORIGEM: ${{ github.event.inputs.origem }}
+          ORIGEM: ${{ github.event_name == 'push' && 'relogio' || github.event.inputs.origem }}
         run: |
           rodar=true
           if [ -n "$CRON" ] || [ "$ORIGEM" = relogio ]; then
@@ -62,6 +66,8 @@ jobs:
     timeout-minutes: 200
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main   # o gatilho pode vir de outro ramo; o robô trabalha e salva sempre na main
 
       - uses: actions/setup-python@v5
         with:

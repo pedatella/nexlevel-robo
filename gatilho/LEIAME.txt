@@ -1,0 +1,1 @@
+Arquivo de gatilho: a rotina do Claude na nuvem grava a hora aqui e o push dispara o corte.
