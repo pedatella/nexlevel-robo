@@ -7,5 +7,5 @@ if [ "$(stat -c %s "$V")" -gt 45000000 ]; then
   ffmpeg -loglevel error -y -i "$V" -c:v libx264 -preset veryfast -crf 26 -maxrate 3500k -bufsize 7000k -c:a aac -b:a 128k -movflags +faststart /tmp/tg.mp4 && V=/tmp/tg.mp4
 fi
 curl -s "https://api.telegram.org/bot$TG_TOKEN/sendVideo" -F "chat_id=$TG_CHAT" -F "supports_streaming=true" \
-  -F "video=@$V" --form-string "caption=📲 Vídeo do corte: salve na galeria e poste por aqui se não achar o rascunho no TikTok." \
+  -F "video=@$V" --form-string "caption=📲 Vídeo do corte (com som): salve na galeria e poste no TikTok." \
   -o /dev/null -w "Telegram vídeo HTTP %{http_code}\n"

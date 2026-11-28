@@ -451,17 +451,15 @@ def quadro(pasta, segundo):
 
 
 def publicar(cfg_path):
-    """Envia o vídeo para a caixa de entrada do TikTok (@nexlevel31) e guarda a legenda para o Lucas colar."""
+    """Deixa o corte pronto para o Lucas postar: confere o som e grava a legenda.
+    Desde 27/11 NÃO envia ao TikTok (pedido do Lucas): o vídeo e a legenda vão pelo Telegram e ele posta."""
     cfg = json.load(open(cfg_path)); pasta = os.path.dirname(os.path.abspath(cfg_path))
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    import tiktok_envio
     video = f"{pasta}/{os.path.basename(pasta)}.mp4"
     vol = _volume(video)
     if vol < MUDO_DB:
-        raise SystemExit(f"ERRO: vídeo SEM SOM ({vol:.0f} dB). Não envio ao TikTok; monte de novo com outro clipe.")
-    r = tiktok_envio.enviar_rascunho(video)
+        raise SystemExit(f"ERRO: vídeo SEM SOM ({vol:.0f} dB). Monte de novo com outro clipe.")
     open(f"{pasta}/legenda.txt", "w", encoding="utf-8").write(cfg["legenda"])
-    print(json.dumps({"tiktok": r, "video": video}, ensure_ascii=False))
+    print(json.dumps({"pronto": video, "som_db": round(vol, 1)}, ensure_ascii=False))
 
 
 if __name__ == "__main__":
