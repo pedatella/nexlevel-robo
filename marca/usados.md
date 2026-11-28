@@ -12,6 +12,7 @@
 | 2026-11-27 | corte-010 | paulinholoko (TikTok recusou: fila cheia; vídeo mandado pelo Telegram) | 296295234 | NINGUÉM AVISOU O PAULO DOS POLICIAIS NA CASA |
 | 2026-11-28 | corte-011 | alanzoka | 286980397 | ELE JUROU ZERAR O GTA 6 SEM MATAR NINGUÉM |
 | 2026-11-28 | corte-012 | paulinholoko | 3683916580 | SAI DA RUA, RAPAZ O TRÂNSITO DO GTA 6 |
+| 2026-11-28 | corte-013 | bistecone | 3008606350 | ROUBARAM A ENCOMENDA DA LUCIA NO GTA 6 |
 
 ## Clipes descartados (nunca usar)
 | clipe | criador | motivo |
