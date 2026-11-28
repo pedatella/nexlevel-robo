@@ -14,6 +14,7 @@
 | 2026-11-28 | corte-012 | paulinholoko | 3683916580 | SAI DA RUA, RAPAZ O TRÂNSITO DO GTA 6 |
 | 2026-11-28 | corte-013 | bistecone | 3008606350 | ROUBARAM A ENCOMENDA DA LUCIA NO GTA 6 |
 | 2026-11-28 | corte-014 | alanzoka | 2942407120@15406 | A VENDA DA LUCIA DEU MUITO ERRADO NO GTA 6 |
+| 2026-11-28 | corte-015 | alanzoka | 220667357 | O ALANZOKA PERDEU A CALMA NESSA LUTA |
 
 ## Clipes descartados (nunca usar)
 | clipe | criador | motivo |
@@ -70,3 +71,7 @@
 | 2891399062 | facada | clube de strip do GTA VI |
 | 2699587678 | snopey | vídeo sobre outro streamer chorando, sem jogo |
 | 866801065 | dona | conversa, sem jogo |
+| 244852620 | snopey | nudez/cena sexual do GTA VI |
+| 3085955436 | facada | nudez do GTA VI |
+| 1756861924 | snopey | loja de biquíni do GTA VI |
+| 2934852559@25459 | snopey | nudez do GTA VI (live) |
